@@ -5,7 +5,6 @@ Our Health and Wellness Tracker App enables users to log their food and water in
 Users can set and track personal wellness goals, participate in community events, and share their progress with others. 
 Our team will deliver a dynamic yet user-friendly experience by utilizing a web-based front end and a Python-powered backend.
 
-
 ## <p align="center">Entity Relationship Diagram </p>
 
 ```mermaid
@@ -13,15 +12,14 @@ Our team will deliver a dynamic yet user-friendly experience by utilizing a web-
 erDiagram
     USER ||--o{ ACTIVITY : logs
     USER ||--o{ GOAL : sets
-    USER ||--o{ LEADERBOARD : participates
-    LEADERBOARD ||--o{ USER : ranks
+    USER ||--o{ LEADERBOARD_PARTICIPATION : participates
+    LEADERBOARD ||--o{ LEADERBOARD_PARTICIPATION : includes
 
     USER {
         int userID PK
         string username
         string email
-        string passwordSalt
-        string passwordHash
+        string password
     }
 
     ACTIVITY {
@@ -29,8 +27,8 @@ erDiagram
         int userID FK
         string type "Workout, Meal, Water, Sleep"
         date dateLogged
-        float duration "For workouts/sleep"
-        float amount "For meals/water intake"
+        float duration "Duration for workouts/sleep"
+        float amount "Amount for meals/water intake"
     }
 
     GOAL {
@@ -39,6 +37,7 @@ erDiagram
         string goalType "Fitness, Nutrition, Sleep"
         float targetValue
         date targetDate
+        string status "Active, Completed, Failed"
     }
 
     LEADERBOARD {
@@ -48,6 +47,13 @@ erDiagram
         date endDate
     }
 
+    LEADERBOARD_PARTICIPATION {
+        int participationID PK
+        int leaderboardID FK
+        int userID FK
+        int rank
+        float score "Points earned"
+    }
 
 ```
 ---
@@ -104,7 +110,7 @@ graph TD
     Frontend -->|API Calls| Backend["🖥️ Backend (Python)"]
     Backend -->|Stores & Retrieves Data| Database["🛢️ Relational Database"]
 
-    Backend -->|Updates & Fetches| Leaderboard["🏆 Live Leaderboard"]
+    Backend -->|Updates & Fetches| Leaderboard["🏆 Leaderboard"]
     Backend -->|Handles Authentication| AuthService["🔐 Auth Service (OAuth/Hashed Passwords)"]
 
     Frontend -->|Fetches Leaderboard Data| Leaderboard
