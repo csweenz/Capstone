@@ -13,8 +13,10 @@ db.sqlite3-journal
 # Secret settings
 .env
 
-# Static and media files (if generated dynamically)
-staticfiles/
+
+# Ignore everything in staticfiles/
+staticfiles/*
+!staticfiles/style.css
 media/
 
 # Ignore editor and IDE specific files
