@@ -29,11 +29,11 @@ ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': env.str('DB_NAME'),  # your database name
-        'USER': env.str('DB_USER'),  # your MySQL username
-        'PASSWORD': env.str('DB_PASSWORD'),  # your MySQL password
-        'HOST': 'localhost',  # or '127.0.0.1'
-        'PORT': '3306',  # default MySQL port
+        'NAME': env.str('DB_NAME', default='logmyfit'),
+        'USER': env.str('DB_USER', default='user'),
+        'PASSWORD': env.str('DB_PASSWORD', default='userdbpw--'),
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 
