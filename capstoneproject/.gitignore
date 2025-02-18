@@ -44,5 +44,3 @@ env.bak/
 # Windows thumbnail cache
 Thumbs.db
 
-# Ignore Django settings file
-settings.py
