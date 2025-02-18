@@ -14,6 +14,7 @@ import environ
 from pathlib import Path
 import os
 
+
 # Initialize environment variables
 env = environ.Env()
 environ.Env.read_env()  # Read .env file
@@ -21,13 +22,19 @@ environ.Env.read_env()  # Read .env file
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Get settings from environment variables or fall back to default
-SECRET_KEY = env('DJANGO_SECRET_KEY', default='your-default-secret-key')
-DEBUG = env.bool('DJANGO_DEBUG', default=True)
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=[])
+SECRET_KEY = env('DJANGO_SECRET_KEY')
+DEBUG = env.bool('DJANGO_DEBUG')
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS')
 
-# Database configuration
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='sqlite:///db.sqlite3'),
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env.str('DB_NAME'),  # your database name
+        'USER': env.str('DB_USER'),  # your MySQL username
+        'PASSWORD': env.str('DB_PASSWORD'),  # your MySQL password
+        'HOST': 'localhost',  # or '127.0.0.1'
+        'PORT': '3306',  # default MySQL port
+    }
 }
 
 
@@ -74,17 +81,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'capstoneproject.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 
 # Password validation
