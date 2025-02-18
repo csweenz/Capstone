@@ -1,0 +1,43 @@
+# Python-specific files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.swp
+
+# Django-related files
+*.log
+db.sqlite3
+db.sqlite3-journal
+
+# Secret settings
+.env
+
+# Static and media files (if generated dynamically)
+staticfiles/
+media/
+
+# Ignore editor and IDE specific files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Deployment
+*.mo
+*.pot
+
+# Ignore virtual environment
+venv/
+env/
+env.bak/
+.env.bak/
+
+# macOS metadata files
+.DS_Store
+
+# Windows thumbnail cache
+Thumbs.db
