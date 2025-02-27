@@ -16,8 +16,9 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
-from LogMyFit.views import home, success, add_user, user_list
+from LogMyFit.views import home, success, add_user, user_list, dashboard
 
 urlpatterns = [
     path('', home, name='home'),
@@ -25,4 +26,7 @@ urlpatterns = [
     path('add-user/', add_user, name='add_user'),
     path('user-list/', user_list, name='user_list'),
     path('success/', success, name='success'),
+    path('login/', LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('dashboard/', dashboard, name='dashboard'),
 ]

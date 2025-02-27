@@ -1,26 +1,24 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 {% load static %}
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Health & Wellness Tracker</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% block title %}Health & Wellness Tracker{% endblock %}
 
-
-</head>
-<body>
+{% block content %}
     <h1>Welcome to LogMyFit!</h1>
     <p>Track your health and wellness goals!</p>
 
-<a href="{% url 'add_user' %}">
-    <button>Create New User</button>
-</a>
+    <a href="{% url 'add_user' %}">
+        <button>Create New User</button>
+    </a>
 
-<a href="{% url 'user_list' %}">
-    <button>User List</button>
-</a>
+    <a href="{% url 'login' %}">
+        <button>Login</button>
+    </a>
 
-</body>
-</html>
+    <a href="{% url 'user_list' %}">
+        <button>User List</button>
+    </a>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

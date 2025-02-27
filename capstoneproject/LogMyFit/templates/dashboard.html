@@ -1,0 +1,39 @@
+{% block content %}
+    <h2>Welcome, {{ user.username }}!</h2>
+
+    <h3>Your Recent Activities</h3>
+    <table border="1">
+        <tr>
+            <th>Type</th>
+            <th>Date Logged</th>
+            <th>Activity Date</th>
+            <th>Duration (hrs)</th>
+            <th>Amount</th>
+        </tr>
+        {% for activity in activities %}
+        <tr>
+            <td>{{ activity.type }}</td>
+            <td>{{ activity.date_logged }}</td>
+            <td>{{ activity.activity_date|default:"-" }}</td>
+            <td>{{ activity.duration|default:"-" }}</td>
+            <td>{{ activity.amount|default:"-" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">No activities logged yet.</td></tr>
+        {% endfor %}
+    </table>
+
+    <h3>Log New Activity</h3>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Activity</button>
+    </form>
+
+
+<form action="{% url 'logout' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+</form>
+
+{% endblock %}

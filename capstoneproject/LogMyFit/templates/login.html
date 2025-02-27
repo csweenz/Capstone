@@ -1,0 +1,12 @@
+{% block content %}
+    <h2>Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- Renders username and password fields -->
+        <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="{% url 'add_user' %}">Sign up</a></p>
+    
+    <button type="button" onclick="window.location.href='{% url 'home' %}'">Home</button>
+{% endblock %}
+
