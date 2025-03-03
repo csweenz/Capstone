@@ -1,3 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
 {% block content %}
     <h2>Welcome, {{ user.username }}!</h2>
 
@@ -11,15 +13,17 @@
             <th>Amount</th>
         </tr>
         {% for activity in activities %}
-        <tr>
-            <td>{{ activity.type }}</td>
-            <td>{{ activity.date_logged }}</td>
-            <td>{{ activity.activity_date|default:"-" }}</td>
-            <td>{{ activity.duration|default:"-" }}</td>
-            <td>{{ activity.amount|default:"-" }}</td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="5">No activities logged yet.</td></tr>
+            <tr>
+                <td>{{ activity.type }}</td>
+                <td>{{ activity.date_logged }}</td>
+                <td>{{ activity.activity_date|default:"-" }}</td>
+                <td>{{ activity.duration|default:"-" }}</td>
+                <td>{{ activity.amount|default:"-" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No activities logged yet.</td>
+            </tr>
         {% endfor %}
     </table>
 
@@ -31,9 +35,9 @@
     </form>
 
 
-<form action="{% url 'logout' %}" method="POST">
-    {% csrf_token %}
-    <button type="submit">Logout</button>
-</form>
+    <form action="{% url 'logout' %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
 
 {% endblock %}

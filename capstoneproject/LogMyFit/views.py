@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .forms import RegistrationForm, ActivityForm
 from .models import Activity
-from django.utils import timezone
 
 
 def home(request):
