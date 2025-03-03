@@ -5,6 +5,45 @@ Our Health and Wellness Tracker App enables users to log their food and water in
 Users can set and track personal wellness goals, participate in community events, and share their progress with others. 
 Our team will deliver a dynamic yet user-friendly experience by utilizing a web-based front end and a Python-powered backend.
 
+---
+## <p align="center">Setup Instructions</p>
+
+### 1. Clone The Repository
+```
+git clone https://github.com/LoganPickell/Capstone.git
+```
+### 2. Create a Virtual Environment (Optional/Recommended, not required)
+```
+python -m venv venv
+```
+### 3. Install Dependencies
+```
+pip install -r requirements.txt
+```
+### 4. Change Directories
+```
+cd capstoneproject
+```
+### 5. Setup Database (Note: Cloud Database Not Yet Set Up)
+Note: You may encounter errors until the database is st up in the cloud.
+
+The database configuration is a work in progress
+
+To proceed with local development, you will need to configure the database.
+
+Follow the necessary instructions once the cloud database is ready
+
+### 6. Run Server
+```
+python manage.py runserver
+```
+
+### 7. Access the App
+Once the server is running, see terminal for link to port to enter in your browser.
+
+---
+
+
 ## <p align="center">Entity Relationship Diagram </p>
 
 ```mermaid
@@ -12,8 +51,17 @@ Our team will deliver a dynamic yet user-friendly experience by utilizing a web-
 erDiagram
     USER ||--o{ ACTIVITY : logs
     USER ||--o{ GOAL : sets
-    USER ||--o{ LEADERBOARD_PARTICIPATION : participates
-    LEADERBOARD ||--o{ LEADERBOARD_PARTICIPATION : includes
+    USER ||--o{ LEADERBOARD : participates
+    
+    ACTIVITY ||--o{ WORKOUT_ACTIVITY : is
+    ACTIVITY ||--o{ MEAL_ACTIVITY : is
+    ACTIVITY ||--o{ WATER_ACTIVITY : is
+    ACTIVITY ||--o{ SLEEP_ACTIVITY : is
+
+    GOAL ||--o{ FITNESS_GOAL : is
+    GOAL ||--o{ NUTRITION_GOAL : is
+    GOAL ||--o{ SLEEP_GOAL : is
+    GOAL ||--o{ WATER_GOAL : is
 
     USER {
         int userID PK
@@ -21,23 +69,77 @@ erDiagram
         string email
         string password
     }
-
-    ACTIVITY {
+    
+     ACTIVITY {
         int activityID PK
         int userID FK
-        string type "Workout, Meal, Water, Sleep"
+        string activityType "Workout, Meal, Water, Sleep"
         date dateLogged
-        float duration "Duration for workouts/sleep"
-        float amount "Amount for meals/water intake"
     }
 
+    WORKOUT_ACTIVITY {
+    int activityID PK, FK
+    string exerciseType "Running, Weightlifting, etc."
+    float duration "Minutes for cardio"
+    float distance "Miles/km for running"
+    float weightLifted "For strength training"
+    int reps 
+    int sets 
+    }
+    
+     MEAL_ACTIVITY {
+        int activityID PK, FK
+        float calories
+        float protein
+        float carbs
+        float fat
+        string mealType "Breakfast, Lunch, Dinner, Snack"
+    }
+    
+        WATER_ACTIVITY {
+        int activityID PK, FK
+        float amount "Liters or ounces"
+    }
+    
+    
+    SLEEP_ACTIVITY {
+        int activityID PK, FK
+        float duration "Hours slept"
+        time bedtime
+        time wakeTime
+    }
+    
     GOAL {
         int goalID PK
         int userID FK
-        string goalType "Fitness, Nutrition, Sleep"
+        string goalType "Fitness, Nutrition, Sleep, Water"
         float targetValue
         date targetDate
         string status "Active, Completed, Failed"
+    }
+
+    FITNESS_GOAL {
+        int goalID PK, FK
+        float targetWeightLifted
+        float targetDistance
+        float targetDuration
+    }
+
+    NUTRITION_GOAL {
+        int goalID PK, FK
+        float dailyCalorieIntake
+        float proteinGoal
+        float sugarLimit
+    }
+    
+        WATER_GOAL {
+        int goalID PK, FK
+        float dailyWaterIntakeTarget
+    }
+
+    SLEEP_GOAL {
+        int goalID PK, FK
+        float targetHours
     }
 
     LEADERBOARD {
@@ -45,11 +147,6 @@ erDiagram
         string challengeName
         date startDate
         date endDate
-    }
-
-    LEADERBOARD_PARTICIPATION {
-        int participationID PK
-        int leaderboardID FK
         int userID FK
         int rank
         float score "Points earned"
