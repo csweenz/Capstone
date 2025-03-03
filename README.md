@@ -5,6 +5,45 @@ Our Health and Wellness Tracker App enables users to log their food and water in
 Users can set and track personal wellness goals, participate in community events, and share their progress with others. 
 Our team will deliver a dynamic yet user-friendly experience by utilizing a web-based front end and a Python-powered backend.
 
+---
+## <p align="center">Setup Instructions</p>
+
+### 1. Clone The Repository
+```
+git clone https://github.com/LoganPickell/Capstone.git
+```
+### 2. Create a Virtual Environment (Optional/Recommended, not required)
+```
+python -m venv venv
+```
+### 3. Install Dependencies
+```
+pip install -r requirements.txt
+```
+### 4. Change Directories
+```
+cd capstoneproject
+```
+### 5. Setup Database (Note: Cloud Database Not Yet Set Up)
+Note: You may encounter errors until the database is st up in the cloud.
+
+The database configuration is a work in progress
+
+To proceed with local development, you will need to configure the database.
+
+Follow the necessary instructions once the cloud database is ready
+
+### 6. Run Server
+```
+python manage.py runserver
+```
+
+### 7. Access the App
+Once the server is running, see terminal for link to port to enter in your browser.
+
+---
+
+
 ## <p align="center">Entity Relationship Diagram </p>
 
 ```mermaid
