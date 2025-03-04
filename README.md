@@ -24,14 +24,14 @@ pip install -r requirements.txt
 ```
 cd capstoneproject
 ```
-### 5. Setup Database (Note: Cloud Database Not Yet Set Up)
-Note: You may encounter errors until the database is st up in the cloud.
+### 5. Fix .env file
+Use the following command in the terminal to copy .env.sample into a .env file.
+```
+cp capstoneproject/.env.sample capstoneproject/.env
+```
+Change the variable DJANGO_SECRET_KEY to a value with 10-15 random characters.
+Save the file.
 
-The database configuration is a work in progress
-
-To proceed with local development, you will need to configure the database.
-
-Follow the necessary instructions once the cloud database is ready
 
 ### 6. Run Server
 ```

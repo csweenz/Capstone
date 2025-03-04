@@ -29,17 +29,16 @@ ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': env.str('DB_NAME', default='logmyfit'),
-        'USER': env.str('DB_USER', default='user'),
-        'PASSWORD': env.str('DB_PASSWORD', default='userdbpw--'),
-        'HOST': '127.0.0.1',
+        'NAME': 'logmyfit',
+        'USER': env.str('DB_USER', default='view_user'),
+        'PASSWORD': env.str('DB_PASSWORD', default='view_password'),
+        'HOST': 'logmyfit-db.c72gi604mwlb.us-east-2.rds.amazonaws.com',
         'PORT': '3306',
     }
 }
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
