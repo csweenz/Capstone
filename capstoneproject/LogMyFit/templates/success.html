@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Success</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Success{% endblock %}
+{% block content %}
     <h1>User added successfully!</h1>
     <a href="{% url 'home' %}">
         <button>Go to Home</button>
     </a>
-</body>
-</html>
+{% endblock %}

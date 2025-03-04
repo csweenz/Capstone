@@ -5,5 +5,9 @@ body {
     text-align: center;
 }
 h1 {
-    color: #2c3e50;
+    color: #00363a;
+}
+
+ul {
+     list-style-type: none;
 }
