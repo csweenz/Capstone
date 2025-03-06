@@ -1,4 +1,9 @@
 /* DASHBOARD */
+
+h2 {
+    color: hotpink;
+}
+
 .dashboard td, .dashboard th {
     word-break: break-word;
 }
