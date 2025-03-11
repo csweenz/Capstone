@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import environ
 from pathlib import Path
-import os
+import os, sys
 
 
 # Initialize environment variables
@@ -26,14 +26,22 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 DEBUG = env.bool('DJANGO_DEBUG')
 ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS')
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'logmyfit',
-        'USER': env.str('DB_USER', default='view_user'),
-        'PASSWORD': env.str('DB_PASSWORD', default='view_password'),
-        'HOST': 'logmyfit-db.c72gi604mwlb.us-east-2.rds.amazonaws.com',
-        'PORT': '3306',
+if "test" in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'logmyfit',
+            'USER': env.str('DB_USER', default='view_user'),
+            'PASSWORD': env.str('DB_PASSWORD', default='view_password'),
+            'HOST': 'logmyfit-db.c72gi604mwlb.us-east-2.rds.amazonaws.com',
+            'PORT': '3306',
     }
 }
 

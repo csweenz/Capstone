@@ -42,8 +42,17 @@ DB_PASSWORD=CollabPW321!
 ```
 python manage.py runserver
 ```
+### 7. Are you on a MAC? Getting a MYSQL Error?
+This error occurs because macOS does not come with MySQL development headers by default, which are required to install mysqlclient (the underlying library that Django’s MySQL backend uses).
+Windows often handles this differently due to bundled MySQL support in some environments.
 
-### 7. Access the App
+Use the following commands to fix the error
+```
+brew install pkg-config
+brew install mysql-client
+pip install mysql
+```
+### 8. Access the App
 Once the server is running, see terminal for link to port to enter in your browser.
 
 ---
