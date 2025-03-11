@@ -7,6 +7,12 @@ body {
     color: #333;
 }
 
+body::after {
+    content: "";
+    display: block;
+    height: 70px; /* Space equal to footer height to prevent touching */
+}
+
 /* Header Section */
 header {
     background: url("../images/banner.jpg") no-repeat center center/cover;
@@ -25,6 +31,11 @@ header h1 {
 nav {
     background: #333;
     padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Ensures it stays on top of other content */
 }
 
 nav ul {
@@ -68,8 +79,10 @@ footer {
     color: white;
     text-align: center;
     padding: 20px;
-    position: relative;
-    margin-top: 50px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
 }
 
 footer p {
