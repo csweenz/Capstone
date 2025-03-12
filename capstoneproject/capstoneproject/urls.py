@@ -18,6 +18,8 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
+
+from LogMyFit import views
 from LogMyFit.views import home, success, add_user, user_list, dashboard
 
 urlpatterns = [
@@ -29,4 +31,10 @@ urlpatterns = [
     path('login/', LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('dashboard/', dashboard, name='dashboard'),
+
+    path('delete_activity/<int:activity_id>/', views.delete_activity, name='delete_activity'),
+    path('edit_activity/<int:activity_id>/', views.edit_activity, name='edit_activity'),
+
+
+
 ]
