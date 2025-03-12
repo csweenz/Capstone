@@ -2,6 +2,12 @@
 
 {% block title %}Homepage{% endblock %}
 
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
 {% block content %}
     <h1>Welcome to LogMyFit!</h1>
     <p>Track your health and wellness goals!</p>

@@ -1,0 +1,125 @@
+/* Dashboard Container */
+main {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* Dashboard Heading */
+h2 {
+    color: #2c3e50;
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+h3 {
+    color: #34495e;
+    font-size: 1.5rem;
+    margin-top: 20px;
+}
+
+/* Activity Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: #2980b9;
+    color: white;
+}
+
+tr:hover {
+    background: #f1f1f1;
+}
+
+/* Log New Activity Buttons */
+div > button {
+    background: #27ae60;
+    color: white;
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+div > button:hover {
+    background: #219150;
+}
+
+/* Forms Styling */
+form {
+    margin-top: 15px;
+    background: #ecf0f1;
+    padding: 15px;
+    border-radius: 5px;
+    display: inline-block;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+form input, form select, form button {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    background: #2980b9;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+form button:hover {
+    background: #1f6693;
+}
+
+/* Logout Button */
+form[action*="logout"] button {
+    background: #e74c3c;
+    font-size: 1rem;
+}
+
+form[action*="logout"] button:hover {
+    background: #c0392b;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    main {
+        width: 95%;
+        padding: 15px;
+    }
+
+    table {
+        font-size: 0.9rem;
+    }
+
+    div > button {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+
+    form {
+        width: 90%;
+    }
+}

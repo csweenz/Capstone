@@ -32,6 +32,11 @@ cp capstoneproject/.env.sample capstoneproject/.env
 Change the variable DJANGO_SECRET_KEY to a value with 10-15 random characters.
 Save the file.
 
+In the file in 'capstoneproject/capstoneproject/.env' add the following at the bottom:
+```
+DB_USER=collaborator
+DB_PASSWORD=CollabPW321!
+```
 
 ### 6. Run Server
 ```

@@ -1,0 +1,1 @@
+To get CSS running properly you may need to reset the Websites cache with the CTRL + Shift + R on Windows/Linux or CMD + Shift + R on Mac. 
