@@ -5,6 +5,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from LogMyFit.models import Activity, WorkoutActivity, MealActivity, WaterActivity, SleepActivity
 from LogMyFit.models import Goal, FitnessGoal, NutritionGoal, WaterGoal, SleepGoal
+from django import forms
+from .models import Activity
 
 
 class RegistrationForm(UserCreationForm):

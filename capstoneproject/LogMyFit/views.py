@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from .forms import RegistrationForm, ActivityForm, WorkoutActivityForm, MealActivityForm, WaterActivityForm, SleepActivityForm
 from .models import Activity, WorkoutActivity, MealActivity, WaterActivity, SleepActivity
 from django.shortcuts import get_object_or_404
+from .forms import ActivityForm  # Create or use an existing form for Activity
+
 
 
 def home(request):
@@ -41,10 +43,9 @@ def login(request):
 @login_required
 def dashboard(request):
     if request.method == 'POST':
-        # Get the activity type from the hidden input field
         activity_type = request.POST.get('activityType')
+        activity_date = request.POST.get('activity_date') or date.today()
 
-        # Initialize the form based on the activity type
         if activity_type == 'Workout':
             form = WorkoutActivityForm(request.POST)
         elif activity_type == 'Meal':
@@ -56,34 +57,23 @@ def dashboard(request):
         else:
             form = None
 
-        # Get the activity_date from the form or default to the current date
-        activity_date = request.POST.get('activity_date') or date.today()
-
-        # Save the form if it's valid
         if form and form.is_valid():
-            # Create the Activity object first
             activity = Activity.objects.create(
                 user=request.user,
                 activityType=activity_type,
-                activity_date=activity_date  # Assign the activity date
+                activity_date=activity_date
             )
-
-            # Now set the activity foreign key for the form (i.e., link the Activity)
             activity_instance = form.save(commit=False)
-            activity_instance.activity = activity  # Link the specific activity to the Activity object
-            activity_instance.save()  # Save the specific activity (e.g., WorkoutActivity, MealActivity, etc.)
-
-            # Redirect to the dashboard after successful submission
+            activity_instance.activity = activity
+            activity_instance.save()
             return redirect('dashboard')
 
     else:
-        # Initialize forms for each activity
         workout_form = WorkoutActivityForm()
         meal_form = MealActivityForm()
         water_form = WaterActivityForm()
         sleep_form = SleepActivityForm()
 
-    # Get all activities for the current user
     activities = Activity.objects.filter(user=request.user).select_related(
         'workout_activity', 'meal_activity', 'water_activity', 'sleep_activity'
     )
@@ -96,11 +86,12 @@ def dashboard(request):
         'activities': activities
     })
 
+
 @login_required
 def delete_activity(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id, user=request.user)
 
-    # Check if related activity exists before deleting
+    # checking if related activity exists before deleting
     if activity.activityType == 'Workout' and hasattr(activity, 'workout_activity'):
         activity.workout_activity.delete()
     elif activity.activityType == 'Meal' and hasattr(activity, 'meal_activity'):
@@ -110,7 +101,7 @@ def delete_activity(request, activity_id):
     elif activity.activityType == 'Sleep' and hasattr(activity, 'sleep_activity'):
         activity.sleep_activity.delete()
 
-    # Delete the main Activity entry
+    # deletes the main Activity entry
     activity.delete()
 
     return redirect('dashboard')
@@ -118,10 +109,9 @@ def delete_activity(request, activity_id):
 
 @login_required
 def edit_activity(request, activity_id):
-    activity = get_object_or_404(Activity, id=activity_id, user=request.user)
+    activity = get_object_or_404(Activity, activityID=activity_id, user=request.user)
 
-    # Determine the correct form to use based on activity type
-    form = None
+    # initialize the form for editing based on the activity type
     if activity.activityType == 'Workout' and hasattr(activity, 'workout_activity'):
         form = WorkoutActivityForm(instance=activity.workout_activity)
     elif activity.activityType == 'Meal' and hasattr(activity, 'meal_activity'):
@@ -130,11 +120,17 @@ def edit_activity(request, activity_id):
         form = WaterActivityForm(instance=activity.water_activity)
     elif activity.activityType == 'Sleep' and hasattr(activity, 'sleep_activity'):
         form = SleepActivityForm(instance=activity.sleep_activity)
+    else:
+        form = None
 
     if request.method == 'POST' and form:
-        form = form.__class__(request.POST, instance=form.instance)  # Corrected instance access
+        # making sure that the form is initialized with the POST data and the correct instance
+        form = form.__class__(request.POST, instance=activity.workout_activity if activity.activityType == 'Workout' else
+                                        activity.meal_activity if activity.activityType == 'Meal' else
+                                        activity.water_activity if activity.activityType == 'Water' else
+                                        activity.sleep_activity)
         if form.is_valid():
             form.save()
-            return redirect('dashboard')
+            return redirect('dashboard')  # after saving it will redirect the user back to the dashboard
 
     return render(request, 'edit_activity.html', {'form': form, 'activity': activity})
