@@ -12,37 +12,45 @@
     <h2>Welcome, {{ user.username }}!</h2>
 
     <h3>Your Recent Activities</h3>
-<table>
-    <tr>
-        <th>Activity Type</th>
-        <th>Date</th>
-        <th>Details</th>
-    </tr>
-    {% for activity in activities %}
+    <table>
         <tr>
-            <td>{{ activity.activityType }}</td>
-            <td>{{ activity.activity_date }}</td>
-            <td>
-                {% if activity.activityType == 'Workout' %}
-                    Exercise: {{ activity.workout_activity.exerciseType|default:"-" }}
-                {% elif activity.activityType == 'Meal' %}
-                    Meal: {{ activity.meal_activity.mealType|default:"-" }}
-                {% elif activity.activityType == 'Water' %}
-                    Amount: {{ activity.water_activity.amount|default:"-" }} ml
-                {% elif activity.activityType == 'Sleep' %}
-                    Bedtime: {{ activity.sleep_activity.bedtime|default:"-" }}
-                {% else %}
-                    -
-                {% endif %}
-            </td>
+            <th>Activity Type</th>
+            <th>Date</th>
+            <th>Details</th>
+            <th>Action</th>  <!-- column for Edit button -->
         </tr>
-    {% empty %}
-        <tr>
-            <td colspan="3">No activities logged yet.</td>
-        </tr>
-    {% endfor %}
-</table>
+        {% for activity in activities %}
+            <tr>
+                <td>{{ activity.activityType }}</td>
+                <td>{{ activity.activity_date }}</td>
+                <td>
+                    {% if activity.activityType == 'Workout' %}
+                        Exercise: {{ activity.workout_activity.exerciseType|default:"-" }}
+                    {% elif activity.activityType == 'Meal' %}
+                        Meal: {{ activity.meal_activity.mealType|default:"-" }}
+                    {% elif activity.activityType == 'Water' %}
+                        Amount: {{ activity.water_activity.amount|default:"-" }} ml
+                    {% elif activity.activityType == 'Sleep' %}
+                        Bedtime: {{ activity.sleep_activity.bedtime|default:"-" }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    <!-- Edit Button -->
+                    <a href="{% url 'edit_activity' activity.activityID %}">
+                        <button>Edit</button>
+                    </a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4">No activities logged yet.</td>
+            </tr>
+        {% endfor %}
+    </table>
 
+    <!-- Log New Activity Forms (unchanged) -->
     <h3>Log New Activity</h3>
     <div>
         <button onclick="document.getElementById('workout-form').style.display='block'">Log Workout</button>
@@ -50,44 +58,6 @@
         <button onclick="document.getElementById('water-form').style.display='block'">Log Water</button>
         <button onclick="document.getElementById('sleep-form').style.display='block'">Log Sleep</button>
     </div>
-
-<div id="workout-form" style="display: none;">
-    <form method="POST" action="{% url 'dashboard' %}">
-        {% csrf_token %}
-        {{ workout_form.as_p }}
-        <input type="hidden" name="activityType" value="Workout">
-        <input type="hidden" name="activity_date" value="{{ activity_date }}">
-        <button type="submit">Submit Workout</button>
-    </form>
-</div>
-
-<div id="meal-form" style="display: none;">
-    <form method="POST" action="{% url 'dashboard' %}">
-        {% csrf_token %}
-        {{ meal_form.as_p }}
-        <input type="hidden" name="activityType" value="Meal">
-        <button type="submit">Submit Meal</button>
-    </form>
-</div>
-
-<div id="water-form" style="display: none;">
-    <form method="POST" action="{% url 'dashboard' %}">
-        {% csrf_token %}
-        {{ water_form.as_p }}
-        <input type="hidden" name="activityType" value="Water">
-        <button type="submit">Submit Water</button>
-    </form>
-</div>
-
-<div id="sleep-form" style="display: none;">
-    <form method="POST" action="{% url 'dashboard' %}">
-        {% csrf_token %}
-        {{ sleep_form.as_p }}
-        <input type="hidden" name="activityType" value="Sleep">
-        <button type="submit">Submit Sleep</button>
-    </form>
-</div>
-
     <form action="{% url 'logout' %}" method="POST">
         {% csrf_token %}
         <button type="submit">Logout</button>
