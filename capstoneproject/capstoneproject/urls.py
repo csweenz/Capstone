@@ -34,4 +34,6 @@ urlpatterns = [
     path('dashboard/', dashboard, name='dashboard'),
     path('edit_activity/<int:activity_id>/', views.edit_activity, name='edit_activity'),
 
+    path('delete_activity/<int:activity_id>/', views.delete_activity, name='delete_activity'),
+
 ]
