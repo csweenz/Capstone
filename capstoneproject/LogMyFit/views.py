@@ -125,10 +125,11 @@ def edit_activity(request, activity_id):
 
     if request.method == 'POST' and form:
         # making sure that the form is initialized with the POST data and the correct instance
-        form = form.__class__(request.POST, instance=activity.workout_activity if activity.activityType == 'Workout' else
-                                        activity.meal_activity if activity.activityType == 'Meal' else
-                                        activity.water_activity if activity.activityType == 'Water' else
-                                        activity.sleep_activity)
+        form = form.__class__(request.POST,
+                              instance=activity.workout_activity if activity.activityType == 'Workout' else
+                              activity.meal_activity if activity.activityType == 'Meal' else
+                              activity.water_activity if activity.activityType == 'Water' else
+                              activity.sleep_activity)
         if form.is_valid():
             form.save()
             return redirect('dashboard')  # after saving it will redirect the user back to the dashboard
