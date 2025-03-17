@@ -12,50 +12,52 @@
     <h2>Welcome, {{ user.username }}!</h2>
 
     <h3>Your Recent Activities</h3>
-    <table>
-        <tr>
-            <th>Activity Type</th>
-            <th>Date</th>
-            <th>Details</th>
-            <th>Action</th>  <!-- Column for Edit button -->
+<table id="dashboard-table">
+    <thead>
+    <tr>
+        <th>Activity Type</th>
+        <th>Date</th>
+        <th>Details</th>
+    </tr>
+    </thead>
+    {% for activity in activities %}
+        <tr class="dashboard-data-row">
+            <td>{{ activity.activityType }}</td>
+            <td>{{ activity.activity_date }}</td>
+            <td>
+                {% if activity.activityType == 'Workout' %}
+                    Exercise: {{ activity.workout_activity.exerciseType|default:"-" }}
+                {% elif activity.activityType == 'Meal' %}
+                    Meal: {{ activity.meal_activity.mealType|default:"-" }}
+                {% elif activity.activityType == 'Water' %}
+                    Amount: {{ activity.water_activity.amount|default:"-" }} ml
+                {% elif activity.activityType == 'Sleep' %}
+                    Duration: {{ activity.sleep_activity.duration|default:"-" }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
         </tr>
-        {% for activity in activities %}
-            <tr>
-                <td>{{ activity.activityType }}</td>
-                <td>{{ activity.activity_date }}</td>
-                <td>
-                    {% if activity.activityType == 'Workout' %}
-                        Exercise: {{ activity.workout_activity.exerciseType|default:"-" }}
-                    {% elif activity.activityType == 'Meal' %}
-                        Meal: {{ activity.meal_activity.mealType|default:"-" }}
-                    {% elif activity.activityType == 'Water' %}
-                        Amount: {{ activity.water_activity.amount|default:"-" }} ml
-                    {% elif activity.activityType == 'Sleep' %}
-                        Bedtime: {{ activity.sleep_activity.bedtime|default:"-" }}
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-                <td>
-                    <!-- Edit Button -->
-                    <a href="{% url 'edit_activity' activity.activityID %}">
-                        <button>Edit ✏️</button>
-                    </a>
-                </td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="4">No activities logged yet.</td>
-            </tr>
-        {% endfor %}
-    </table>
+        <tr class="dashboard-expand-row" style="display: none;">
+            <td colspan="2">
+                <a href="{% url 'edit_activity' activity.activityID %}"><button>Edit ✏️</button></a>
+             <button onclick="if(confirm('Are you sure you want to delete this activity?')) window.location.href='{% url 'delete_activity' activity.activityID %}'">Delete</button>
+             </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="3">No activities logged yet.</td>
+        </tr>
+    {% endfor %}
+</table>
 
     <h3>Log New Activity</h3>
+
     <div>
-        <button onclick="document.getElementById('workout-form').style.display='block'">Log Workout</button>
-        <button onclick="document.getElementById('meal-form').style.display='block'">Log Meal</button>
-        <button onclick="document.getElementById('water-form').style.display='block'">Log Water</button>
-        <button onclick="document.getElementById('sleep-form').style.display='block'">Log Sleep</button>
+    <button onclick="toggleDisplay('workout-form')">Log Workout</button>
+    <button onclick="toggleDisplay('meal-form')">Log Meal</button>
+    <button onclick="toggleDisplay('water-form')">Log Water</button>
+    <button onclick="toggleDisplay('sleep-form')">Log Sleep</button>
     </div>
 
     <div id="workout-form" style="display: none;">
@@ -99,4 +101,26 @@
         {% csrf_token %}
         <button type="submit">Logout</button>
     </form>
+
+<script>
+
+// for showing and hiding forms
+  function toggleDisplay(id) {
+    const element = document.getElementById(id);
+    element.style.display = (element.style.display === 'block') ? 'none' : 'block';
+  }
+
+// click listeners for update/delete functions
+  document.querySelectorAll('.dashboard-data-row').forEach(row => {
+    row.addEventListener('click', function() {
+      const nextRow = this.nextElementSibling;
+      if (nextRow && nextRow.classList.contains('dashboard-expand-row')) {
+        // toggle display
+        nextRow.style.display = (nextRow.style.display === 'table-row') ? 'none' : 'table-row';
+      }
+    });
+  });
+
+</script>
+
 {% endblock %}
