@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta, datetime
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -68,9 +68,16 @@ class WaterActivity(models.Model):
 # Sleep Activity Model
 class SleepActivity(models.Model):
     activity = models.OneToOneField(Activity, on_delete=models.CASCADE, primary_key=True, related_name='sleep_activity')
-    duration = models.FloatField()
     bedtime = models.TimeField()
     wakeTime = models.TimeField()
+
+    @property
+    def duration(self):
+        bedtime_dt = datetime.combine(date.today(), self.bedtime)
+        waketime_dt = datetime.combine(date.today(), self.wakeTime)
+        if waketime_dt < bedtime_dt:
+            waketime_dt += timedelta(days=1)
+        return waketime_dt - bedtime_dt
 
 
 # Goal Model

@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 from .forms import RegistrationForm, ActivityForm, WorkoutActivityForm, MealActivityForm, WaterActivityForm, SleepActivityForm
 from .models import Activity, WorkoutActivity, MealActivity, WaterActivity, SleepActivity
 from django.shortcuts import get_object_or_404
-from .forms import ActivityForm  # Create or use an existing form for Activity
 
 
 
@@ -86,10 +85,9 @@ def dashboard(request):
         'activities': activities
     })
 
-
 @login_required
 def delete_activity(request, activity_id):
-    activity = get_object_or_404(Activity, id=activity_id, user=request.user)
+    activity = get_object_or_404(Activity, activityID=activity_id, user=request.user)
 
     # checking if related activity exists before deleting
     if activity.activityType == 'Workout' and hasattr(activity, 'workout_activity'):

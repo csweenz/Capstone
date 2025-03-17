@@ -46,9 +46,17 @@ class WaterActivityForm(forms.ModelForm):
 
 # Sleep Activity Form
 class SleepActivityForm(forms.ModelForm):
+    bedtime = forms.TimeField(
+        widget=forms.TimeInput(format='%H:%M', attrs={'type': 'time'}),
+        input_formats=['%H:%M'],
+    )
+    wakeTime = forms.TimeField(
+        widget=forms.TimeInput(format='%H:%M', attrs={'type': 'time'}),
+        input_formats=['%H:%M'],
+    )
     class Meta:
         model = SleepActivity
-        fields = ['duration', 'bedtime', 'wakeTime']
+        fields = ['bedtime', 'wakeTime']
 
 # Fitness Goal Form
 class FitnessGoalForm(forms.ModelForm):
