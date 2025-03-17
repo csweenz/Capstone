@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 from gc import get_objects
 
 from django.shortcuts import render, redirect
@@ -77,12 +77,23 @@ def dashboard(request):
         'workout_activity', 'meal_activity', 'water_activity', 'sleep_activity'
     )
 
+    # 30 days of data for visualization
+    series_30_date = date.today() - timedelta(days=30)
+    monthly_activities = Activity.objects.filter(user=request.user, activity_date__gte=series_30_date)
+
+    # This is just an example, expand visualization_data for send to dashboard.html
+    visualization_data = {
+        'total_activities': monthly_activities.count(),
+        'total_workout_activities': monthly_activities.filter(activityType='Workout').count(),
+    }
+
     return render(request, 'dashboard.html', {
         'workout_form': workout_form,
         'meal_form': meal_form,
         'water_form': water_form,
         'sleep_form': sleep_form,
-        'activities': activities
+        'activities': activities,
+        'visualization_data': visualization_data
     })
 
 @login_required

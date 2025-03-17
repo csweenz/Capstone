@@ -3,6 +3,7 @@ import pytest
 from django.contrib.auth.models import User
 from django.urls import reverse
 from LogMyFit.models import Activity, WorkoutActivity
+from LogMyFit.views import dashboard
 
 
 @pytest.mark.django_db
@@ -26,6 +27,16 @@ def test_dashboard_default_view(client):
     response = client.get(reverse('dashboard'))
     assert not response.status_code == 200
 
+@pytest.mark.django_db
+def test_dashboard_full_view(client):
+    user = User.objects.create_user(username="testuser", password="password123")
+    client.login(username="testuser", password="password123")
+    activity = Activity.objects.create(activityID=1, user=user, activityType='Workout')
+    WorkoutActivity.objects.create(activity=activity)
+    response = client.get(reverse('dashboard'))
+    visualization_data = response.context.get('visualization_data')
+    assert visualization_data is not None
+    assert visualization_data['total_workout_activities'] == 1
 
 def test_home_view(client):
 
