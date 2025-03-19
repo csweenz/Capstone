@@ -1,13 +1,13 @@
-from datetime import date, timedelta
-from gc import get_objects
+from datetime import date
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .forms import RegistrationForm, ActivityForm, WorkoutActivityForm, MealActivityForm, WaterActivityForm, SleepActivityForm
-from .models import Activity, WorkoutActivity, MealActivity, WaterActivity, SleepActivity
 from django.shortcuts import get_object_or_404
 
+from .forms import RegistrationForm, WorkoutActivityForm, MealActivityForm, WaterActivityForm, SleepActivityForm
+from .models import Activity
+from capstoneproject.utils import get_activities_for_user
 
 
 def home(request):
@@ -73,13 +73,8 @@ def dashboard(request):
         water_form = WaterActivityForm()
         sleep_form = SleepActivityForm()
 
-    activities = Activity.objects.filter(user=request.user).select_related(
-        'workout_activity', 'meal_activity', 'water_activity', 'sleep_activity'
-    )
-
-    # 30 days of data for visualization
-    series_30_date = date.today() - timedelta(days=30)
-    monthly_activities = Activity.objects.filter(user=request.user, activity_date__gte=series_30_date)
+    activities = get_activities_for_user.get_all(request)
+    monthly_activities = get_activities_for_user.get_monthly(request)
 
     # This is just an example, expand visualization_data for send to dashboard.html
     visualization_data = {
