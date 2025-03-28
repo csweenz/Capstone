@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from django.core.cache import cache
 
 from .forms import RegistrationForm, WorkoutActivityForm, MealActivityForm, WaterActivityForm, SleepActivityForm
 from .models import Activity
@@ -31,7 +32,10 @@ def add_user(request):
 
 
 def user_list(request):
-    users = User.objects.all()
+    users = cache.get('ball_users')
+    if users is None:
+        users = list(User.objects.all().values('username', 'email')) # list instead of queryset to prevent iterating over queryset
+        cache.set('all_users', users, 900) # 15 minutes (900 seconds)
     return render(request, 'user_list.html', {'users': users})
 
 
@@ -65,6 +69,8 @@ def dashboard(request):
             activity_instance = form.save(commit=False)
             activity_instance.activity = activity
             activity_instance.save()
+            cache.delete(f'activities_{request.user}')
+            cache.delete(f'activities_{request.user}_30_days')
             return redirect('dashboard')
 
     else:
