@@ -11,7 +11,7 @@
 {% block content %}
     <h2>Welcome, {{ user.username }}!</h2>
 
-    <div id="dashboard-table-container">
+    <div id="dashboard-activity-table-container">
     <h3>Your Recent Activities</h3>
     <table id="dashboard-table">
     <thead>
@@ -21,7 +21,7 @@
         <th>Details</th>
     </tr>
     </thead>
-    {% for activity in activities %}
+    {% for activity in monthly_activities %}
         <tr class="dashboard-data-row">
             <td>{{ activity.activityType }}</td>
             <td>{{ activity.activity_date }}</td>
@@ -53,6 +53,35 @@
 </table>
     </div>
 
+    <div id="dashboard-goal-table-container">
+    <h3>Your Goals</h3>
+    <table id="dashboard-table">
+    <thead>
+    <tr>
+        <th>Goal Type</th>
+        <th>Deadline</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    {% for goal in goals %}
+        <tr class="dashboard-data-row">
+            <td>{{ goal.goalType }}</td>
+            <td>{{ goal.targetDate }}</td>
+            <td>{{ goal.status }}</td>
+        </tr>
+        <!--<tr class="dashboard-expand-row" style="display: none;">
+            <td colspan="2">
+            update, delete, details logic
+            </td>
+        </tr>-->
+    {% empty %}
+        <tr>
+            <td colspan="3">No goals set.</td>
+        </tr>
+    {% endfor %}
+</table>
+    </div>
+
     <div id="dashboard-form-container">
     <h3>Log New Activity</h3>
         <div    id="dashboard-form-buttons">
@@ -66,6 +95,7 @@
         <form method="POST" action="{% url 'dashboard' %}">
             {% csrf_token %}
             {{ workout_form.as_p }}
+            <input type="hidden" name="form_type" value="activity">
             <input type="hidden" name="activityType" value="Workout">
             <input type="hidden" name="activity_date" value="{{ activity_date }}">
             <button type="submit">Submit Workout</button>
@@ -95,6 +125,53 @@
             <button type="submit">Submit Sleep</button>
         </form>
     </div>
+    </div>
+
+    <div id="dashboard-goal-container">
+    <h3>Create New Goal</h3>
+        <div    id="dashboard-goal-buttons">
+        <button onclick="toggleDisplay('fitness-goal-form')">New Fitness Goal</button>
+        <button onclick="toggleDisplay('nutrition-goal-form')">New Nutrition Goal</button>
+        <button onclick="toggleDisplay('water-goal-form')">New Water Goal</button>
+        <button onclick="toggleDisplay('sleep-goal-form')">New Sleep Goal</button>
+        </div>
+
+        <div id="fitness-goal-form" style="display: none;">
+        <form method="POST" action="{% url 'dashboard' %}">
+            {% csrf_token %}
+            {{ fitness_goal_form.as_p }}
+            <input type="hidden" name="form_type" value="goal">
+            <input type="hidden" name="goal_type" value="Fitness">
+            <button type="submit">Set Fitness Goal</button>
+        </form>
+        </div>
+        <div id="nutrition-goal-form" style="display: none;">
+        <form method="POST" action="{% url 'dashboard' %}">
+             {% csrf_token %}
+             {{ nutrition_goal_form.as_p }}
+             <input type="hidden" name="form_type" value="goal">
+             <input type="hidden" name="goal_type" value="Nutrition">
+             <button type="submit">Set Nutrition Goal</button>
+         </form>
+        </div>
+        <div id="water-goal-form" style="display: none;">
+        <form method="POST" action="{% url 'dashboard' %}">
+            {% csrf_token %}
+            {{ water_goal_form.as_p }}
+            <input type="hidden" name="form_type" value="goal">
+            <input type="hidden" name="goal_type" value="Water">
+            <button type="submit">Set Water Goal</button>
+         </form>
+        </div>
+        <div id="sleep-goal-form" style="display: none;">
+        <form method="POST" action="{% url 'dashboard' %}">
+            {% csrf_token %}
+            {{ sleep_goal_form.as_p }}
+            <input type="hidden" name="form_type" value="goal">
+            <input type="hidden" name="goal_type" value="Sleep">
+            <button type="submit">Set Sleep Goal</button>
+        </form>
+        </div>
     </div>
 
     <form action="{% url 'logout' %}" method="POST">

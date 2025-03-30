@@ -98,13 +98,11 @@ class Goal(models.Model):
     goalID = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="goals")
     goalType = models.CharField(max_length=10, choices=GOAL_TYPES)
-    targetValue = models.FloatField()
-    targetDate = models.DateField()
+    targetDate = models.DateField(default=date.today)
     status = models.CharField(max_length=10, choices=STATUS_TYPES, default="Active")
 
     def __str__(self):
         return f"{self.user.username} - {self.goalType} Goal"
-
 
 # Fitness Goal Model
 class FitnessGoal(models.Model):

@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -6,9 +6,9 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.core.cache import cache
 
-from .forms import RegistrationForm, WorkoutActivityForm, MealActivityForm, WaterActivityForm, SleepActivityForm
-from .models import Activity
-from capstoneproject.utils import get_activities_for_user
+import LogMyFit.forms as forms
+from .models import Activity, Goal
+from capstoneproject.utils import get_activities_for_user, get_goals_for_user
 
 
 def home(request):
@@ -21,12 +21,12 @@ def success(request):
 
 def add_user(request):
     if request.method == 'POST':
-        form = RegistrationForm(request.POST)
+        form = forms.RegistrationForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('success')
     else:
-        form = RegistrationForm()
+        form = forms.RegistrationForm()
 
     return render(request, 'add_user.html', {'form': form})
 
@@ -46,41 +46,76 @@ def login(request):
 @login_required
 def dashboard(request):
     if request.method == 'POST':
-        activity_type = request.POST.get('activityType')
-        activity_date = request.POST.get('activity_date') or date.today()
+        form_type = request.POST.get('form_type')
 
-        if activity_type == 'Workout':
-            form = WorkoutActivityForm(request.POST)
-        elif activity_type == 'Meal':
-            form = MealActivityForm(request.POST)
-        elif activity_type == 'Water':
-            form = WaterActivityForm(request.POST)
-        elif activity_type == 'Sleep':
-            form = SleepActivityForm(request.POST)
-        else:
-            form = None
+        if form_type == 'activity':
+            activity_type = request.POST.get('activityType')
+            activity_date = request.POST.get('activity_date') or date.today()
 
-        if form and form.is_valid():
-            activity = Activity.objects.create(
-                user=request.user,
-                activityType=activity_type,
-                activity_date=activity_date
-            )
-            activity_instance = form.save(commit=False)
-            activity_instance.activity = activity
-            activity_instance.save()
-            cache.delete(f'activities_{request.user}')
-            cache.delete(f'activities_{request.user}_30_days')
-            return redirect('dashboard')
+            if activity_type == 'Workout':
+                form = forms.WorkoutActivityForm(request.POST)
+            elif activity_type == 'Meal':
+                form = forms.MealActivityForm(request.POST)
+            elif activity_type == 'Water':
+                form = forms.WaterActivityForm(request.POST)
+            elif activity_type == 'Sleep':
+                form = forms.SleepActivityForm(request.POST)
+            else:
+                form = None
 
+            if form and form.is_valid():
+                activity = Activity.objects.create(
+                    user=request.user,
+                    activityType=activity_type,
+                    activity_date=activity_date
+                )
+                activity_instance = form.save(commit=False)
+                activity_instance.activity = activity
+                activity_instance.save()
+                cache.delete(f'activities_{request.user}')
+                cache.delete(f'activities_{request.user}_30_days')
+                return redirect('dashboard')
+
+        if form_type == 'goal':
+            goal_type = request.POST.get('goal_type')
+
+            if goal_type == 'Fitness':
+                form = forms.FitnessGoalForm(request.POST)
+            elif goal_type == 'Nutrition':
+                form = forms.NutritionGoalForm(request.POST)
+            elif goal_type == 'Water':
+                form = forms.WaterGoalForm(request.POST)
+            elif goal_type == 'Sleep':
+                form = forms.SleepGoalForm(request.POST)
+            else:
+                form = None
+
+            if form and form.is_valid():
+                days_until_deadline = form.cleaned_data.get('targetDate')
+                deadline = date.today() + timedelta(days=days_until_deadline)
+                goal = Goal.objects.create(
+                    user=request.user,
+                    goalType=goal_type,
+                    targetDate=deadline)
+                goal_instance = form.save(commit=False)
+                goal_instance.goal = goal
+                goal_instance.save()
+                cache.delete(f'goals_{request.user}')
+                return redirect('dashboard')
     else:
-        workout_form = WorkoutActivityForm()
-        meal_form = MealActivityForm()
-        water_form = WaterActivityForm()
-        sleep_form = SleepActivityForm()
+        workout_form = forms.WorkoutActivityForm()
+        meal_form = forms.MealActivityForm()
+        water_form = forms.WaterActivityForm()
+        sleep_form = forms.SleepActivityForm()
+        fitness_goal_form = forms.FitnessGoalForm()
+        nutrition_goal_form = forms.NutritionGoalForm()
+        water_goal_form = forms.WaterGoalForm()
+        sleep_goal_form = forms.SleepGoalForm()
+
 
     activities = get_activities_for_user.get_all(request)
     monthly_activities = get_activities_for_user.get_monthly(request)
+    goals = get_goals_for_user.get_goals(request)
 
     # This is just an example, expand visualization_data for send to dashboard.html
     visualization_data = {
@@ -93,7 +128,13 @@ def dashboard(request):
         'meal_form': meal_form,
         'water_form': water_form,
         'sleep_form': sleep_form,
+        'fitness_goal_form': fitness_goal_form,
+        'nutrition_goal_form': nutrition_goal_form,
+        'water_goal_form': water_goal_form,
+        'sleep_goal_form': sleep_goal_form,
         'activities': activities,
+        'monthly_activities': monthly_activities,
+        'goals' : goals,
         'visualization_data': visualization_data
     })
 
@@ -123,13 +164,13 @@ def edit_activity(request, activity_id):
 
     # initialize the form for editing based on the activity type
     if activity.activityType == 'Workout' and hasattr(activity, 'workout_activity'):
-        form = WorkoutActivityForm(instance=activity.workout_activity)
+        form = forms.WorkoutActivityForm(instance=activity.workout_activity)
     elif activity.activityType == 'Meal' and hasattr(activity, 'meal_activity'):
-        form = MealActivityForm(instance=activity.meal_activity)
+        form = forms.MealActivityForm(instance=activity.meal_activity)
     elif activity.activityType == 'Water' and hasattr(activity, 'water_activity'):
-        form = WaterActivityForm(instance=activity.water_activity)
+        form = forms.WaterActivityForm(instance=activity.water_activity)
     elif activity.activityType == 'Sleep' and hasattr(activity, 'sleep_activity'):
-        form = SleepActivityForm(instance=activity.sleep_activity)
+        form = forms.SleepActivityForm(instance=activity.sleep_activity)
     else:
         form = None
 

@@ -60,24 +60,40 @@ class SleepActivityForm(forms.ModelForm):
 
 # Fitness Goal Form
 class FitnessGoalForm(forms.ModelForm):
-    class Meta:
+    targetDate = forms.FloatField(
+        label="Days Until Deadline", #label and help_text would make inputs more clear
+        initial=7
+    )
+    class Meta():
         model = FitnessGoal
-        fields = ['targetWeightLifted', 'targetDistance', 'targetDuration']
+        fields = ['targetWeightLifted', 'targetDistance', 'targetDuration', 'targetDate']
 
 # Nutrition Goal Form
 class NutritionGoalForm(forms.ModelForm):
+    targetDate = forms.FloatField(
+        label="Days Until Deadline",
+        initial=7
+    )
     class Meta:
         model = NutritionGoal
         fields = ['dailyCalorieIntake', 'proteinGoal', 'sugarLimit']
 
 # Water Goal Form
 class WaterGoalForm(forms.ModelForm):
+    targetDate = forms.FloatField(
+        label="Days Until Deadline",
+        initial=7
+    )
     class Meta:
         model = WaterGoal
         fields = ['dailyWaterIntakeTarget']
 
 # Sleep Goal Form
 class SleepGoalForm(forms.ModelForm):
+    targetDate = forms.FloatField(
+        label="Days Until Deadline",
+        initial=7
+    )
     class Meta:
         model = SleepGoal
         fields = ['targetHours']
