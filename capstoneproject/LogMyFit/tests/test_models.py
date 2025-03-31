@@ -16,8 +16,7 @@ def test_create_activity():
 @pytest.mark.django_db
 def test_create_goal():
     user = User.objects.create_user(username="testuser", password="password123")
-    goal = Goal.objects.create(user=user, goalType="Nutrition", targetValue=100, targetDate=date.today())
-
+    goal = Goal.objects.create(user=user, goalType="Nutrition", targetDate=date.today())
     assert goal.user.username == "testuser"
     assert goal.goalType == "Nutrition"
 
