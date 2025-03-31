@@ -107,7 +107,7 @@ class Goal(models.Model):
 
 # Fitness Goal Model
 class FitnessGoal(models.Model):
-    goal = models.OneToOneField(Goal, on_delete=models.CASCADE, primary_key=True)
+    goal = models.OneToOneField(Goal, on_delete=models.CASCADE, primary_key=True, related_name='fitness_goal')
     targetWeightLifted = models.FloatField(null=True, blank=True)
     targetDistance = models.FloatField(null=True, blank=True)
     targetDuration = models.FloatField(null=True, blank=True)
@@ -119,20 +119,20 @@ class FitnessGoal(models.Model):
 
 # Nutrition Goal Model
 class NutritionGoal(models.Model):
-    goal = models.OneToOneField(Goal, on_delete=models.CASCADE, primary_key=True)
+    goal = models.OneToOneField(Goal, on_delete=models.CASCADE, primary_key=True, related_name='nutrition_goal')
     dailyCalorieIntake = models.FloatField(null=True, blank=True)
     proteinGoal = models.FloatField(null=True, blank=True)
     sugarLimit = models.FloatField(null=True, blank=True)
 
 # Water Goal Model
 class WaterGoal(models.Model):
-    goal = models.OneToOneField(Goal, on_delete=models.CASCADE, primary_key=True)
+    goal = models.OneToOneField(Goal, on_delete=models.CASCADE, primary_key=True, related_name='water_goal')
     dailyWaterIntakeTarget = models.FloatField(default=0)
 
 
 # Sleep Goal Model
 class SleepGoal(models.Model):
-    goal = models.OneToOneField(Goal, on_delete=models.CASCADE, primary_key=True)
+    goal = models.OneToOneField(Goal, on_delete=models.CASCADE, primary_key=True, related_name='sleep_goal')
     targetHours = models.FloatField(default=0)
 
 

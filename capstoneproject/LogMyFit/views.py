@@ -154,6 +154,8 @@ def delete_activity(request, activity_id):
 
     # deletes the main Activity entry
     activity.delete()
+    cache.delete(f'activities_{request.user}')
+    cache.delete(f'activities_{request.user}_30_days')
 
     return redirect('dashboard')
 
@@ -183,6 +185,76 @@ def edit_activity(request, activity_id):
                               activity.sleep_activity)
         if form.is_valid():
             form.save()
+            cache.delete(f'activities_{request.user}')
+            cache.delete(f'activities_{request.user}_30_days')
             return redirect('dashboard')  # after saving it will redirect the user back to the dashboard
 
     return render(request, 'edit_activity.html', {'form': form, 'activity': activity})
+
+@login_required
+def delete_goal(request, goal_id):
+    goal = get_object_or_404(Goal, goalID=goal_id, user=request.user)
+
+    # checking if related goal exists before deleting
+    if goal.goalType == 'Fitness' and hasattr(goal, 'fitness_goal'):
+        goal.fitness_goal.delete()
+    elif goal.goalType == 'Nutrition' and hasattr(goal, 'nutrition_goal'):
+        goal.nutrition_goal.delete()
+    elif goal.goalType == 'Water' and hasattr(goal, 'water_goal'):
+        goal.water_goal.delete()
+    elif goal.goalType == 'Sleep' and hasattr(goal, 'sleep_goal'):
+        goal.sleep_goal.delete()
+
+    goal.delete()
+    cache.delete(f'goals_{request.user}')
+    return redirect('dashboard')
+
+@login_required
+def edit_goal(request, goal_id):
+    goal = get_object_or_404(Goal, goalID=goal_id, user=request.user)
+
+    # Determine the appropriate form class and instance based on the goal type.
+    if goal.goalType == 'Fitness' and hasattr(goal, 'fitness_goal'):
+        form_class = forms.FitnessGoalForm
+        instance = goal.fitness_goal
+    elif goal.goalType == 'Nutrition' and hasattr(goal, 'nutrition_goal'):
+        form_class = forms.NutritionGoalForm
+        instance = goal.nutrition_goal
+    elif goal.goalType == 'Water' and hasattr(goal, 'water_goal'):
+        form_class = forms.WaterGoalForm
+        instance = goal.water_goal
+    elif goal.goalType == 'Sleep' and hasattr(goal, 'sleep_goal'):
+        form_class = forms.SleepGoalForm
+        instance = goal.sleep_goal
+    else:
+        form_class = None
+        instance = None
+
+    if form_class is None:
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = form_class(request.POST, instance=instance)
+        if form.is_valid():
+            target_value = form.cleaned_data.get('targetDate')
+            new_deadline = date.today() + timedelta(days=target_value)
+            goal.targetDate = new_deadline
+            goal.save()
+            form.save()
+            cache.delete(f'goals_{request.user}')
+            return redirect('dashboard')
+    else:
+        form = form_class(instance=instance)
+
+    return render(request, 'edit_goal.html', {'form': form, 'goal': goal})
+
+@login_required
+def toggle_goal_status(request, goal_id):
+    goal = get_object_or_404(Goal, goalID=goal_id, user=request.user)
+    if goal.status == 'Active':
+        goal.status = 'Completed'
+    else:
+        goal.status = 'Active'
+    goal.save()
+    cache.delete(f'goals_{request.user}')
+    return redirect('dashboard')

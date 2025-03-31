@@ -33,7 +33,9 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('dashboard/', dashboard, name='dashboard'),
     path('edit_activity/<int:activity_id>/', views.edit_activity, name='edit_activity'),
-
     path('delete_activity/<int:activity_id>/', views.delete_activity, name='delete_activity'),
+    path('edit_goal/<int:goal_id>/', views.edit_goal, name='edit_goal'),
+    path('delete_goal/<int:goal_id>/', views.delete_goal, name='delete_goal'),
+    path('goal/toggle/<int:goal_id>/', views.toggle_goal_status, name='toggle_goal_status'),
 
 ]
