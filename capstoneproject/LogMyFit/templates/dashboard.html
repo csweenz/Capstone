@@ -105,6 +105,7 @@
         <form method="POST" action="{% url 'dashboard' %}">
             {% csrf_token %}
             {{ meal_form.as_p }}
+            <input type="hidden" name="form_type" value="activity">
             <input type="hidden" name="activityType" value="Meal">
             <button type="submit">Submit Meal</button>
         </form>
@@ -113,6 +114,7 @@
         <form method="POST" action="{% url 'dashboard' %}">
             {% csrf_token %}
             {{ water_form.as_p }}
+            <input type="hidden" name="form_type" value="activity">
             <input type="hidden" name="activityType" value="Water">
             <button type="submit">Submit Water</button>
         </form>
@@ -121,6 +123,7 @@
         <form method="POST" action="{% url 'dashboard' %}">
             {% csrf_token %}
             {{ sleep_form.as_p }}
+            <input type="hidden" name="form_type" value="activity">
             <input type="hidden" name="activityType" value="Sleep">
             <button type="submit">Submit Sleep</button>
         </form>
