@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.core.cache import cache
 
 import LogMyFit.forms as forms
+from capstoneproject.utils.create_leaderboard_metrics import create_leaderboard_metrics
 from .models import Activity, Goal
 from capstoneproject.utils import get_activities_for_user, get_goals_for_user
 
@@ -32,12 +33,17 @@ def add_user(request):
 
 
 def user_list(request):
-    users = cache.get('ball_users')
+    users = cache.get('all_users')
     if users is None:
         users = list(User.objects.all().values('username', 'email')) # list instead of queryset to prevent iterating over queryset
         cache.set('all_users', users, 900) # 15 minutes (900 seconds)
     return render(request, 'user_list.html', {'users': users})
 
+def leaderboards(request):
+    boards = cache.get('leaderboard')
+    if boards is None:
+        boards = create_leaderboard_metrics()
+    return render(request, 'leaderboards.html', {'leaderboards': boards})
 
 def login(request):
     return render(request, 'login.html')
