@@ -1,0 +1,21 @@
+{% extends "base.html"%}
+{% block title %}Leaderboards{% endblock %}
+
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+    {% for metric, ranking_list in leaderboards.items %}
+    <div class="leaderboard">
+        <h2>{{ metric }}</h2>
+        <ul>
+            {% for entry in ranking_list %}
+                <li>Rank: {{ entry.rank }}, Value: {{ entry.value }}, Username: {{ entry.username }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endfor %}
+    {% endblock %}
