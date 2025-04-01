@@ -1,21 +1,76 @@
-{% extends "base.html"%}
+{% extends "base.html" %}
 {% block title %}Leaderboards{% endblock %}
 
 {% load static %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <style>
+        .leaderboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .leaderboard {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            min-width: 300px;
+        }
+
+        .leaderboard h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .gold { color: gold; font-weight: bold; }
+        .silver { color: silver; font-weight: bold; }
+        .bronze { color: #cd7f32; font-weight: bold; }
+    </style>
 {% endblock %}
 
 {% block content %}
+<div class="leaderboard-container">
     {% for metric, ranking_list in leaderboards.items %}
     <div class="leaderboard">
-        <h2>{{ metric }}</h2>
-        <ul>
+        <h2>{{ metric|title }}</h2>
+        <table>
+            <tr>
+                <th>Rank</th>
+                <th>Username</th>
+                <th>Value</th>
+            </tr>
             {% for entry in ranking_list %}
-                <li>Rank: {{ entry.rank }}, Value: {{ entry.value }}, Username: {{ entry.username }}</li>
+            <tr>
+                <td class="{% if entry.rank == 1 %}gold{% elif entry.rank == 2 %}silver{% elif entry.rank == 3 %}bronze{% endif %}">
+                    {{ entry.rank }}
+                </td>
+                <td>{{ entry.username }}</td>
+                <td>{{ entry.value }}</td>
+            </tr>
             {% endfor %}
-        </ul>
+        </table>
     </div>
-{% endfor %}
-    {% endblock %}
+    {% endfor %}
+</div>
+{% endblock %}
