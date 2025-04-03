@@ -42,11 +42,20 @@ def user_list(request):
         cache.set('all_users', users, 900) # 15 minutes (900 seconds)
     return render(request, 'user_list.html', {'users': users})
 
+
 def leaderboards(request):
     boards = cache.get('leaderboard_metrics')
     if boards is None:
         boards = create_leaderboard_metrics()
-    return render(request, 'leaderboards.html', {'leaderboards': boards})
+
+    # Format metric names for better display in UI
+    formatted_leaderboards = {
+        metric.replace("_", " ").title(): ranking_list
+        for metric, ranking_list in boards.items()
+    }
+
+    return render(request, 'leaderboards.html', {'leaderboards': formatted_leaderboards})
+
 
 def login(request):
     return render(request, 'login.html')
