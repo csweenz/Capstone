@@ -61,9 +61,15 @@
         <h3>Sleep Duration</h3>
         <canvas id="sleepChart"></canvas>
 
+        <h3>Water Consumption</h3>
+        <canvas id="waterChart"></canvas>
+
+        <h3>Workout Duration</h3>
+        <canvas id="workoutChart"></canvas>
+
         <script>
             const chartData = JSON.parse('{{ chart_data_json|escapejs }}');
-
+            //Calories Chart
             const ctx1 = document.getElementById('caloriesChart').getContext('2d');
             const caloriesChart = new Chart(ctx1, {
                 type: 'line',
@@ -77,7 +83,7 @@
                     }]
                 }
             });
-
+            //Sleep Chart
             const ctx2 = document.getElementById('sleepChart').getContext('2d');
             const sleepChart = new Chart(ctx2, {
                 type: 'bar',
@@ -87,6 +93,33 @@
                         label: 'Sleep Duration (hrs)',
                         data: chartData.sleep,
                         borderWidth: 1
+                    }]
+                }
+            });
+            //Water consumption chart
+            const ctx3 = document.getElementById('waterChart').getContext('2d');
+            const waterChart = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: chartData.dates,
+                    datasets: [{
+                        label: 'Water Consumption (ml)',
+                        data: chartData.water,
+                        borderWidth: 1
+                    }]
+                }
+            });
+            //Workout Duration Chart
+            const ctx4 = document.getElementById('workoutChart').getContext('2d');
+            const workoutChart = new Chart(ctx4, {
+                type: 'line',
+                data: {
+                    labels: chartData.dates,
+                    datasets: [{
+                        label: 'Workout Duration (mins)',
+                        data: chartData.workout_duration,
+                        borderWidth: 2,
+                        fill: true
                     }]
                 }
             });
