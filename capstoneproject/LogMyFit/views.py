@@ -62,6 +62,12 @@ def login(request):
 
 
 @login_required
+def profile_view(request):
+    user = request.user
+    return render(request, 'profile.html', {'user': user})
+
+
+@login_required
 def dashboard(request):
     if request.method == 'POST':
         form_type = request.POST.get('form_type')

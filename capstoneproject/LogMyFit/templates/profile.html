@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{{ user.username }}'s Profile</h2>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Date joined:</strong> {{ user.date_joined }}</p>
+
+    <!-- Optional: Add more user-related info -->
+    <p><a href="{% url 'dashboard' %}">Back to Dashboard</a></p>
+{% endblock %}
