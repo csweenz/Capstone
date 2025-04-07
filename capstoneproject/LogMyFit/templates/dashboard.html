@@ -9,8 +9,10 @@
 {% endblock %}
 
 {% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center;">
     <h2>Welcome, {{ user.username }}!</h2>
-
+    <a href="{% url 'profile' %}" class="btn btn-outline-primary" style="margin-left: 20px;">Profile</a>
+    </div>
     <div id="dashboard-activity-table-container">
     <h3>Your Recent Activities</h3>
     <table id="dashboard-table">

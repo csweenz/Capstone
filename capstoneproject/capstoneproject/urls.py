@@ -38,5 +38,6 @@ urlpatterns = [
     path('edit_goal/<int:goal_id>/', views.edit_goal, name='edit_goal'),
     path('delete_goal/<int:goal_id>/', views.delete_goal, name='delete_goal'),
     path('goal/toggle/<int:goal_id>/', views.toggle_goal_status, name='toggle_goal_status'),
+    path('profile/', views.profile_view, name='profile'),
 
 ]
