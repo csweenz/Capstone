@@ -65,7 +65,7 @@
                 <td class="{% if entry.rank == 1 %}gold{% elif entry.rank == 2 %}silver{% elif entry.rank == 3 %}bronze{% endif %}">
                     {{ entry.rank }}
                 </td>
-                <td>{{ entry.username }}</td>
+                <td><a href="{% url 'profile' username=entry.username %}">{{ entry.username }}</a></td>
                 <td>{{ entry.value }}</td>
             </tr>
             {% endfor %}
