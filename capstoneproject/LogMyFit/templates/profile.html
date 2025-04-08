@@ -1,10 +1,39 @@
 {% extends 'base.html' %}
 
+{%  load static %}
+
 {% block content %}
-    <h2>{{ user.username }}'s Profile</h2>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Date joined:</strong> {{ user.date_joined }}</p>
+    <h2>{{ profile_user.username }}'s Profile</h2>
+
+  {% if is_owner %}
+    <!-- Full profile view for the owner -->
+    <p><strong>Email:</strong> {{ profile_user.email }}</p>
+    <p><strong>Date joined:</strong> {{ profile_user.date_joined }}</p>
+    <!-- Include additional sensitive information here-->
+
+  {% else %}
+    <!-- Public profile view for other users-->
+    <p><strong>Member since:</strong> {{ profile_user.date_joined|date:"M d, Y" }}</p>
+    <!-- Hide sensitive data here -->
+
+  {% endif %}
+
+    <div id="chatbox">
+      <div id="js-variables"
+           data-get-chats-url="{% url 'get_chats' %}"
+           data-post-chat-url="{% url 'post_chat' %}"
+           data-recipient="{{ profile_user.id }}">
+      </div>
+      <h3>Messages for {{ profile_user.username }}</h3>
+      <div id="chat-messages"></div>
+      <form id="chat-form">
+          {% csrf_token %}
+          <input type="text" id="chat-input" placeholder="Enter your message...">
+          <button type="submit">Send</button>
+      </form>
+  </div>
 
     <!-- Optional: Add more user-related info -->
     <p><a href="{% url 'dashboard' %}">Back to Dashboard</a></p>
+    <script src="{% static 'js/chatbox.js' %}"></script>
 {% endblock %}

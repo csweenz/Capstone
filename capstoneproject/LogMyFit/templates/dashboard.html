@@ -14,7 +14,8 @@
     <div style="flex: 1;"></div>
     <h2 style="text-align: center; flex: 2;">Welcome, {{ user.username }}!</h2>
     <div style="flex: 1; text-align: right;">
-        <a href="{% url 'profile' %}" class="btn btn-outline-primary">Profile</a>
+        <a href="{% url 'profile' username=user.username %}" class="btn btn-outline-primary">Profile</a>
+        <a href="{% url 'leaderboards' %}" class="btn-outline-primary">Leaderboards</a>
     </div>
     </div>
 
@@ -186,15 +187,27 @@
         </div>
     </div>
 
+    <div id="js-variables"
+             data-get-chats-url="{% url 'get_chats' %}"
+             data-post-chat-url="{% url 'post_chat' %}"
+             data-recipient="{{ user.id }}">
+        </div>
+    <div id="chatbox">
+        <h3>Messages for {{ user.username }}</h3>
+        <div id="chat-messages"></div>
+        <form id="chat-form">
+        {% csrf_token %}
+        <input type="text" id="chat-input" placeholder="Enter your message...">
+        <button type="submit">Send</button>
+        </form>
+    </div>
+
     <form action="{% url 'logout' %}" method="POST">
         {% csrf_token %}
         <button type="submit">Logout</button>
     </form>
 
-    <a href="{% url 'leaderboards' %}">
-        <button>Leaderboards</button>
-    </a>
-
+<script src="{% static 'js/chatbox.js' %}"></script>
 <script src="{% static 'js/dashboard.js' %}"></script>
 
 {% endblock %}
