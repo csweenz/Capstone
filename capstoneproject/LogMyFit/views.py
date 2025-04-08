@@ -6,6 +6,11 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.core.cache import cache
 
+from django.http import JsonResponse
+from django.urls import reverse
+
+from .models import ChatboxMessage
+
 import LogMyFit.forms as forms
 from capstoneproject.utils.create_leaderboard_metrics import create_leaderboard_metrics
 from .models import Activity, Goal
@@ -59,9 +64,19 @@ def login(request):
 
 
 @login_required
-def profile_view(request):
+def profile_view(request, username):
+    profile_user = get_object_or_404(User, username=username)
+    is_owner = (profile_user == request.user)
+
+    context = {'profile_user': profile_user,
+               'is_owner': is_owner}
+    context.update({
+        'js_get_chats_url': request.build_absolute_uri(reverse('get_chats')),  # you can pass URLs if needed
+        'js_post_chat_url': request.build_absolute_uri(reverse('post_chat')),
+        'recipient_id': profile_user.id,
+    })
     user = request.user
-    return render(request, 'profile.html', {'user': user})
+    return render(request, 'profile.html', context)
 
 
 @login_required
@@ -279,3 +294,38 @@ def toggle_goal_status(request, goal_id):
     goal.save()
     cache.delete(f'goals_{request.user}')
     return redirect('dashboard')
+
+@login_required
+def post_chat(request):  #Receives POST via AJAX with a new message.
+    if request.method == 'POST':
+        message_text = request.POST.get('message', '').strip()
+        recipient_id = request.POST.get('recipient')
+        if message_text and recipient_id:
+            recipient = get_object_or_404(User, pk=recipient_id)
+            ChatboxMessage.objects.create(
+                recipient=recipient,
+                sender=request.user,
+                message=message_text
+            )
+            return JsonResponse({'status': 'ok'})
+        return JsonResponse({'status': 'error', 'message': 'Missing message or recipient'}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=405)
+
+def get_chats(request): #Returns the latest chatbox messages as JSON.
+    recipient_id = request.GET.get("recipient")
+    if recipient_id:
+        try:
+            recipient = User.objects.get(pk=recipient_id)
+        except User.DoesNotExist:
+            recipient = request.user
+    else:
+        recipient = request.user
+    messages = ChatboxMessage.objects.filter(recipient=recipient).order_by('-timestamp')[:20]   # Adjust number of messages as needed
+    messages_data = [
+        {
+            'sender': m.sender.username if m.sender else 'Anonymous',
+            'message': m.message,
+            'timestamp': m.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        } for m in messages
+    ]
+    return JsonResponse({'messages': messages_data})
