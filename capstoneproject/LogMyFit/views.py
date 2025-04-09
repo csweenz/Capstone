@@ -5,6 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.core.cache import cache
+from django.core.serializers.json import DjangoJSONEncoder
+import json
+
 
 from django.http import JsonResponse
 from django.urls import reverse
@@ -179,6 +182,41 @@ def dashboard(request):
         #total_miles_cycled: total_miles_cycled
     }
 
+    # For Visualization
+    chart_data = {
+        'calories': [],
+        'dates': [],
+        'water': [],
+        'sleep': [],
+        'workout_duration': []
+    }
+
+    # For Visualization
+    for act in monthly_activities:
+        date_label = act.activity_date.strftime('%Y %m, %d')
+        chart_data['dates'].append(date_label)
+
+        if act.activityType == 'Meal' and hasattr(act, 'meal_activity'):
+            chart_data['calories'].append(act.meal_activity.calories)
+        else:
+            chart_data['calories'].append(0)
+
+        if act.activityType == 'Water' and hasattr(act, 'water_activity'):
+            chart_data['water'].append(act.water_activity.amount)
+        else:
+            chart_data['water'].append(0)
+
+        if act.activityType == 'Sleep' and hasattr(act, 'sleep_activity'):
+            sleep_duration = act.sleep_activity.duration.total_seconds() / 3600
+            chart_data['sleep'].append(round(sleep_duration, 2))
+        else:
+            chart_data['sleep'].append(0)
+
+        if act.activityType == 'Workout' and hasattr(act, 'workout_activity'):
+            chart_data['workout_duration'].append(act.workout_activity.duration or 0)
+        else:
+            chart_data['workout_duration'].append(0)
+
     return render(request, 'dashboard.html', {
         'workout_form': workout_form,
         'meal_form': meal_form,
@@ -191,7 +229,8 @@ def dashboard(request):
         'activities': activities,
         'monthly_activities': monthly_activities,
         'goals' : goals,
-        'visualization_data': visualization_data
+        'visualization_data': visualization_data,
+        'chart_data_json': json.dumps(chart_data, cls=DjangoJSONEncoder)
     })
 
 @login_required
