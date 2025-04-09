@@ -58,6 +58,10 @@ def leaderboards(request):
 
     return render(request, 'leaderboards.html', {'leaderboards': formatted_leaderboards})
 
+@login_required
+def clear_leaderboard_cache(request):
+    cache.delete('leaderboard_metrics')
+    return redirect('leaderboards')
 
 def login(request):
     return render(request, 'login.html')
