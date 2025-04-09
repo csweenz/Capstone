@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import environ
 from pathlib import Path
 import os, sys
+import mimetypes
 
 
 # Initialize environment variables
@@ -45,6 +46,11 @@ else:
     }
 }
 
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -68,6 +74,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+mimetypes.add_type("application/javascript", ".js", True)
 
 ROOT_URLCONF = 'capstoneproject.urls'
 
