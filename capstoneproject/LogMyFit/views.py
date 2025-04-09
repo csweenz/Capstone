@@ -65,17 +65,20 @@ def login(request):
 
 @login_required
 def profile_view(request, username):
-    profile_user = get_object_or_404(User, username=username)
-    is_owner = (profile_user == request.user)
+    cache_key = f"profile_{username}"
+    context = cache.get(cache_key)
+    if context is None:
+        profile_user = get_object_or_404(User, username=username)
+        is_owner = (profile_user == request.user)
 
-    context = {'profile_user': profile_user,
-               'is_owner': is_owner}
-    context.update({
-        'js_get_chats_url': request.build_absolute_uri(reverse('get_chats')),  # you can pass URLs if needed
-        'js_post_chat_url': request.build_absolute_uri(reverse('post_chat')),
-        'recipient_id': profile_user.id,
-    })
-    user = request.user
+        context = {'profile_user': profile_user,
+               'is_owner': is_owner,
+               'js_get_chats_url': request.build_absolute_uri(reverse('get_chats')),
+                'js_post_chat_url': request.build_absolute_uri(reverse('post_chat')),
+                'recipient_id': profile_user.id,
+        }
+        cache.set(cache_key, context, 300) #300 seconds
+        #Updating the profile requires invalidating this cached object
     return render(request, 'profile.html', context)
 
 
@@ -153,10 +156,23 @@ def dashboard(request):
     monthly_activities = get_activities_for_user.get_monthly(request)
     goals = get_goals_for_user.get_goals(request)
 
-    # This is just an example, expand visualization_data for send to dashboard.html
+    # This is just an example, expand relevant data structures and visualization_data for send to dashboard.html
+    # intermediate data structures are not sent
+    workout_activities = [activity for activity in monthly_activities if activity.activityType == 'Workout']
+    # a more complicated example
+    """total_miles_cycled = sum(
+    (activity.workout_activity.distance or 0)
+    for activity in monthly_activities
+    if activity.activityType == 'Workout'
+       and hasattr(activity, 'workout_activity')
+       and activity.workout_activity.exerciseType == 'Cycling'
+    )"""
+
+    # visualizations data is sent as context to template
     visualization_data = {
-        'total_activities': monthly_activities.count(),
-        'total_workout_activities': monthly_activities.filter(activityType='Workout').count(),
+        'total_activities': len(monthly_activities),
+        'total_workout_activities': len(workout_activities),
+        #total_miles_cycled: total_miles_cycled
     }
 
     return render(request, 'dashboard.html', {
@@ -307,6 +323,8 @@ def post_chat(request):  #Receives POST via AJAX with a new message.
                 sender=request.user,
                 message=message_text
             )
+            cache_key = f"chat_messages_{recipient_id}"
+            cache.delete(cache_key)
             return JsonResponse({'status': 'ok'})
         return JsonResponse({'status': 'error', 'message': 'Missing message or recipient'}, status=400)
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=405)
@@ -320,12 +338,18 @@ def get_chats(request): #Returns the latest chatbox messages as JSON.
             recipient = request.user
     else:
         recipient = request.user
-    messages = ChatboxMessage.objects.filter(recipient=recipient).order_by('-timestamp')[:20]   # Adjust number of messages as needed
-    messages_data = [
-        {
-            'sender': m.sender.username if m.sender else 'Anonymous',
-            'message': m.message,
-            'timestamp': m.timestamp.strftime("%Y-%m-%d %H:%M:%S")
-        } for m in messages
-    ]
-    return JsonResponse({'messages': messages_data})
+    cache_key = f"chat_messages_{recipient.id}"
+    messages = cache.get(cache_key)
+
+    if messages is None:
+        messages_query = ChatboxMessage.objects.filter(recipient_id=recipient_id).order_by('-timestamp')[:20]
+        messages = []
+        for m in messages_query:
+            messages.append({
+                'sender': m.sender.username if m.sender else 'Anonymous',
+                'message': m.message,
+                'timestamp': m.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            })
+        cache.set(cache_key, messages, 300)
+
+    return JsonResponse({'messages': messages})

@@ -43,11 +43,10 @@ def create_leaderboard_metrics():
         )
 
         # Sleep
-        sleep_activities = SleepActivity.objects.filter(activity__user=user)
+        sleep_activities = list(SleepActivity.objects.filter(activity__user=user).select_related('activity'))
         total_sleep_seconds = sum(s.duration.total_seconds() for s in sleep_activities)
         hours_slept = total_sleep_seconds / 3600
-        sleep_dates = list(sleep_activities.values_list('activity__activity_date', flat=True).distinct())
-        sleep_dates = sorted(sleep_dates, reverse=True)
+        sleep_dates = sorted({s.activity.activity_date for s in sleep_activities}, reverse=True)
         daily_sleep_streak = 0
         expected_date = date.today()
         for d in sleep_dates:
