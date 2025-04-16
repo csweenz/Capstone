@@ -38,6 +38,62 @@ body {
   align-content: center;
 }
 
+/* Header and Footer */
+nav {
+    background: var(--color-background);
+    padding: var(--padding);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Ensures it stays on top of other content */
+}
+nav ul {
+    list-style: none;
+    padding: var(--padding);
+    margin: var(--margin);
+    display: flex;
+    justify-content: center;
+}
+nav ul li {
+    margin: var(--margin);
+}
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: var(--base-font-size);
+    padding: var(--padding);
+    transition: background 0.3s;
+}
+nav ul li a:hover {
+    background: #555;
+    border-radius: 5px;
+}
+
+footer {
+    background: var(--color-background);
+    color: #333333;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    padding: var(--padding);
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+footer p {
+    margin: var(--margin);
+    text-align: center;
+}
+/* Footer Image Placeholder */
+.footer-image {
+    max-width: 100%;
+    max-height: 150px;
+    background: url("../images/footer-banner.jpg") no-repeat center center/cover;
+    margin-bottom: var(--margin);
+}
+
 /* Headings use the heading font and typescale */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
@@ -101,7 +157,7 @@ button:hover {
   opacity: 0.8;
 }
 
-/* Optional additional styling for layout or components */
+/* Navbar styling */
 .header-container {
     text-align: center;
     width: 100%;
@@ -145,8 +201,6 @@ button:hover {
     font-size: calc(var(--base-font-size) * 0.8);
     cursor: pointer;
 }
-
-/* The dropdown menu */
 .menu {
     position: absolute;
     top: calc(100% + 70px); /* gap below the button, adjust as needed */
@@ -169,7 +223,7 @@ button:hover {
 /* Dashboard Container */
 main {
     max-width: 900px;
-    margin: auto;
+    margin: 0 auto;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     text-align: center;
@@ -179,11 +233,9 @@ main {
 h2 {
     margin-bottom: 1px;
 }
-
 h3 {
     margin-top: 2px;
 }
-
 .header-container {
     background-color: #f0f0f0; /* A light gray background */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -193,20 +245,17 @@ h3 {
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 15px;
+    margin-top: var(--margin);
 }
-
 th, td {
     padding: var(--padding);
     text-align: left;
     border-bottom: 1px solid var(--color-border);
 }
-
 th {
     background: var(--color-primary);
     color: white;
 }
-
 tr:hover {
     background: var(--color-tertiary);
 }
@@ -223,7 +272,6 @@ div > button {
     font-size: var(--base-font-size);
     transition: background 0.3s ease;
 }
-
 div > button:hover {
     background: var(--color-tertiary);
 }
@@ -239,7 +287,6 @@ form {
     max-width: 400px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
-
 form input, form select, form button {
     width: 100%;
     padding: var(--padding);
@@ -247,7 +294,6 @@ form input, form select, form button {
     border: 1px solid var(--color-border);
     border-radius: 5px;
 }
-
 form button {
     background: var(--color-primary);
     color: white;
@@ -255,7 +301,6 @@ form button {
     cursor: pointer;
     transition: background 0.3s ease;
 }
-
 form button:hover {
     background: var(--color-tertiary);
 }
@@ -265,7 +310,6 @@ form[action*="logout"] button {
     background: #e74c3c;
     font-size: 1rem;
 }
-
 form[action*="logout"] button:hover {
     background: #c0392b;
 }
