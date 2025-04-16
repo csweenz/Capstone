@@ -16,12 +16,15 @@ from .models import ChatboxMessage
 
 import LogMyFit.forms as forms
 from capstoneproject.utils.create_leaderboard_metrics import create_leaderboard_metrics
-from .models import Activity, Goal
+from .models import Activity, Goal, UserProfile
 from capstoneproject.utils import get_activities_for_user, get_goals_for_user
 
 
 def home(request):
-    return render(request, 'home.html')
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    else:
+        return render(request, 'home.html')
 
 
 def success(request):
@@ -76,6 +79,7 @@ def profile_view(request, username):
     context = cache.get(cache_key)
     if context is None:
         profile_user = get_object_or_404(User, username=username)
+        profile, created = UserProfile.objects.get_or_create(user=profile_user)
         is_owner = (profile_user == request.user)
 
         context = {'profile_user': profile_user,
@@ -83,12 +87,29 @@ def profile_view(request, username):
                'js_get_chats_url': request.build_absolute_uri(reverse('get_chats')),
                 'js_post_chat_url': request.build_absolute_uri(reverse('post_chat')),
                 'recipient_id': profile_user.id,
+                'profile': profile,
         }
         cache.set(cache_key, context, 300) #300 seconds
         #Updating the profile requires invalidating this cached object
     return render(request, 'profile.html', context)
 
 
+def update_theme(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = forms.ThemeForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile', username=request.user.username)
+    else:
+        form = forms.ThemeForm(instance=profile)
+
+    return render(request, 'profile.html', {
+        'profile_user': request.user,
+        'is_owner': True,
+        'form': form
+    })
 @login_required
 def dashboard(request):
     if request.method == 'POST':
