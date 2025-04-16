@@ -6,19 +6,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Capstone Project{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    {% if request.user.is_authenticated and request.user.profile.preferred_theme %}
+      <link rel="stylesheet" href="{% static 'css/'|add:request.user.profile.preferred_theme|add:'.css' %}">
+    {% else %}
+      <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% endif %}
     <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico' %}" >
     {% block extra_css %}{% endblock %}
 
 </head>
 <body>
-    <header>
+    <header style="position: sticky; top: 0; background-color: #fff; max-width: 900px; margin: auto; height: 80px; align-content: center;">
         <nav>
-            <ul>
-                <li><a href="{% url 'home' %}">Home</a></li>
-            </ul>
-        </nav>
-        <h1>LogMyFit</h1>
+        <h1 style="color: black"><a href="{% url 'home' %}">LogMyFit</a></h1>
+            </nav>
     </header>
 
     <main>
@@ -27,7 +28,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 LogMyFit. All rights reserved.</p>
+        <p>&copy; 2025 <a href="{% url 'home' %}">LogMyFit</a>. All rights reserved.</p>
     </footer>
 </body>
 </html>

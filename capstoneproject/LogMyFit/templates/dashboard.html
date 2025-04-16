@@ -5,74 +5,146 @@
 {% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js CDN -->
 {% endblock %}
 
 {% block content %}
 
-    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-    <div style="flex: 1;"></div>
-    <h2 style="text-align: center; flex: 2;">Welcome, {{ user.username }}!</h2>
-    <div style="flex: 1; text-align: right;">
-        <a href="{% url 'profile' username=user.username %}" class="btn btn-outline-primary">Profile</a>
-        <a href="{% url 'leaderboards' %}" class="btn-outline-primary">Leaderboards</a>
+    <div class="top-menu">
+        <button class="chat-bubble" onclick="toggleChat('chat-box')">💬</button>
+        <div id="chat-box" class="chat-box">
+            <h3>Messages for {{ user.username }}</h3>
+            <div id="chat-messages"></div>
+                <form id="chat-form">
+                {% csrf_token %}
+                <input type="text" id="chat-input" placeholder="Enter your message...">
+                <button type="submit">Send</button>
+                </form>
+            </div>
+
+        <button class="hamburger" id='ham' onclick="toggleMenu('header-menu')">&#9776;</button>
+        <ul id="header-menu" class="menu">
+            <li><a href="{% url 'profile' username=user.username %}" class="btn btn-outline-primary">Profile</a></li>
+            <li><a href="{% url 'leaderboards' %}" class="btn btn-outline-primary">Leaderboards</a></li>
+            <li><form action="{% url 'logout' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+            </form></li>
+        </ul>
+    </div>
+
+    <div class="header-container">
+        <div class="header-center">
+        <h1>Welcome, {{ user.username }}!</h1>
+        </div>
+    </div>
+
+    <div id="dashboard-form-container">
+        <div class="header-container"><h3>Log New Activity</h3></div>
+        <div    id="dashboard-form-buttons">
+        <button onclick="toggleDisplay('workout-form')">Log Workout</button>
+        <button onclick="toggleDisplay('meal-form')">Log Meal</button>
+        <button onclick="toggleDisplay('water-form')">Log Water</button>
+        <button onclick="toggleDisplay('sleep-form')">Log Sleep</button>
+        </div>
+
+        <div id="workout-form" style="display: none;">
+        <form method="POST" action="{% url 'dashboard' %}">
+            {% csrf_token %}
+            {{ workout_form.as_p }}
+            <input type="hidden" name="form_type" value="activity">
+            <input type="hidden" name="activityType" value="Workout">
+            <input type="hidden" name="activity_date" value="{{ activity_date }}">
+            <button type="submit">Submit Workout</button>
+        </form>
+    </div>
+        <div id="meal-form" style="display: none;">
+        <form method="POST" action="{% url 'dashboard' %}">
+            {% csrf_token %}
+            {{ meal_form.as_p }}
+            <input type="hidden" name="form_type" value="activity">
+            <input type="hidden" name="activityType" value="Meal">
+            <button type="submit">Submit Meal</button>
+        </form>
+    </div>
+        <div id="water-form" style="display: none;">
+        <form method="POST" action="{% url 'dashboard' %}">
+            {% csrf_token %}
+            {{ water_form.as_p }}
+            <input type="hidden" name="form_type" value="activity">
+            <input type="hidden" name="activityType" value="Water">
+            <button type="submit">Submit Water</button>
+        </form>
+    </div>
+        <div id="sleep-form" style="display: none;">
+        <form method="POST" action="{% url 'dashboard' %}">
+            {% csrf_token %}
+            {{ sleep_form.as_p }}
+            <input type="hidden" name="form_type" value="activity">
+            <input type="hidden" name="activityType" value="Sleep">
+            <button type="submit">Submit Sleep</button>
+        </form>
     </div>
     </div>
 
-    <div id="dashboard-activity-table-container">
-    <h3>Your Recent Activities</h3>
-    <table id="dashboard-table">
-    <thead>
-    <tr>
-        <th>Activity Type</th>
-        <th>Date</th>
-        <th>Details</th>
-    </tr>
-    </thead>
-    {% for activity in monthly_activities %}
-        <tr class="dashboard-data-row">
-            <td>{{ activity.activityType }}</td>
-            <td>{{ activity.activity_date }}</td>
-            <td>
-                {% if activity.activityType == 'Workout' %}
-                    Exercise: {{ activity.workout_activity.exerciseType|default:"-" }}
-                {% elif activity.activityType == 'Meal' %}
-                    Meal: {{ activity.meal_activity.mealType|default:"-" }}
-                {% elif activity.activityType == 'Water' %}
-                    Amount: {{ activity.water_activity.amount|default:"-" }} ml
-                {% elif activity.activityType == 'Sleep' %}
-                    Duration: {{ activity.sleep_activity.duration|default:"-" }}
-                {% else %}
-                    -
-                {% endif %}
-            </td>
-        </tr>
-        <tr class="dashboard-expand-row" style="display: none;">
-            <td colspan="2">
-                <a href="{% url 'edit_activity' activity.activityID %}"><button  id="edit_button">Edit ✏️</button></a>
-             <button id='delete_button' onclick="if(confirm('Are you sure you want to delete this activity?')) window.location.href='{% url 'delete_activity' activity.activityID %}'">Delete</button>
-             </td>
-        </tr>
-    {% empty %}
-        <tr>
-            <td colspan="3">No activities logged yet.</td>
-        </tr>
-    {% endfor %}
-</table>
+    <div id="dashboard-goal-container">
+        <div class="header-container"><h3>Create New Goal</h3></div>
+        <div    id="dashboard-goal-buttons">
+        <button onclick="toggleDisplay('fitness-goal-form')">New Fitness Goal</button>
+        <button onclick="toggleDisplay('nutrition-goal-form')">New Nutrition Goal</button>
+        <button onclick="toggleDisplay('water-goal-form')">New Water Goal</button>
+        <button onclick="toggleDisplay('sleep-goal-form')">New Sleep Goal</button>
+        </div>
+
+        <div id="fitness-goal-form" style="display: none;">
+        <form method="POST" action="{% url 'dashboard' %}">
+            {% csrf_token %}
+            {{ fitness_goal_form.as_p }}
+            <input type="hidden" name="form_type" value="goal">
+            <input type="hidden" name="goal_type" value="Fitness">
+            <button type="submit">Set Fitness Goal</button>
+        </form>
+        </div>
+        <div id="nutrition-goal-form" style="display: none;">
+        <form method="POST" action="{% url 'dashboard' %}">
+             {% csrf_token %}
+             {{ nutrition_goal_form.as_p }}
+             <input type="hidden" name="form_type" value="goal">
+             <input type="hidden" name="goal_type" value="Nutrition">
+             <button type="submit">Set Nutrition Goal</button>
+         </form>
+        </div>
+        <div id="water-goal-form" style="display: none;">
+        <form method="POST" action="{% url 'dashboard' %}">
+            {% csrf_token %}
+            {{ water_goal_form.as_p }}
+            <input type="hidden" name="form_type" value="goal">
+            <input type="hidden" name="goal_type" value="Water">
+            <button type="submit">Set Water Goal</button>
+         </form>
+        </div>
+        <div id="sleep-goal-form" style="display: none;">
+        <form method="POST" action="{% url 'dashboard' %}">
+            {% csrf_token %}
+            {{ sleep_goal_form.as_p }}
+            <input type="hidden" name="form_type" value="goal">
+            <input type="hidden" name="goal_type" value="Sleep">
+            <button type="submit">Set Sleep Goal</button>
+        </form>
+        </div>
     </div>
 
     <div id="activities-chart-container">
-        <h3>Calories Over Time</h3>
+        <div class="header-container"><h3>Calories Over Time</h3></div>
         <canvas id="caloriesChart"></canvas>
 
-        <h3>Sleep Duration</h3>
+        <div class="header-container"><h3>Sleep Duration</h3></div>
         <canvas id="sleepChart"></canvas>
 
-        <h3>Water Consumption</h3>
+        <div class="header-container"><h3>Water Consumption</h3></div>
         <canvas id="waterChart"></canvas>
 
-        <h3>Workout Duration</h3>
+        <div class="header-container"><h3>Workout Duration</h3></div>
         <canvas id="workoutChart"></canvas>
 
         <script>
@@ -135,7 +207,7 @@
     </div>
 
     <div id="dashboard-goal-table-container">
-    <h3>Your Goals</h3>
+        <div class="header-container"><h3>Your Goals</h3></div>
     <table id="dashboard-table">
     <thead>
     <tr>
@@ -165,122 +237,57 @@
 </table>
     </div>
 
-    <div id="dashboard-form-container">
-    <h3>Log New Activity</h3>
-        <div    id="dashboard-form-buttons">
-        <button onclick="toggleDisplay('workout-form')">Log Workout</button>
-        <button onclick="toggleDisplay('meal-form')">Log Meal</button>
-        <button onclick="toggleDisplay('water-form')">Log Water</button>
-        <button onclick="toggleDisplay('sleep-form')">Log Sleep</button>
-        </div>
-
-        <div id="workout-form" style="display: none;">
-        <form method="POST" action="{% url 'dashboard' %}">
-            {% csrf_token %}
-            {{ workout_form.as_p }}
-            <input type="hidden" name="form_type" value="activity">
-            <input type="hidden" name="activityType" value="Workout">
-            <input type="hidden" name="activity_date" value="{{ activity_date }}">
-            <button type="submit">Submit Workout</button>
-        </form>
-    </div>
-        <div id="meal-form" style="display: none;">
-        <form method="POST" action="{% url 'dashboard' %}">
-            {% csrf_token %}
-            {{ meal_form.as_p }}
-            <input type="hidden" name="form_type" value="activity">
-            <input type="hidden" name="activityType" value="Meal">
-            <button type="submit">Submit Meal</button>
-        </form>
-    </div>
-        <div id="water-form" style="display: none;">
-        <form method="POST" action="{% url 'dashboard' %}">
-            {% csrf_token %}
-            {{ water_form.as_p }}
-            <input type="hidden" name="form_type" value="activity">
-            <input type="hidden" name="activityType" value="Water">
-            <button type="submit">Submit Water</button>
-        </form>
-    </div>
-        <div id="sleep-form" style="display: none;">
-        <form method="POST" action="{% url 'dashboard' %}">
-            {% csrf_token %}
-            {{ sleep_form.as_p }}
-            <input type="hidden" name="form_type" value="activity">
-            <input type="hidden" name="activityType" value="Sleep">
-            <button type="submit">Submit Sleep</button>
-        </form>
-    </div>
+    <div id="dashboard-activity-table-container">
+        <div class="header-container"><h3>Your Recent Activities</h3></div>
+    <table id="dashboard-table">
+    <thead>
+    <tr>
+        <th>Activity Type</th>
+        <th>Date</th>
+        <th>Details</th>
+    </tr>
+    </thead>
+    {% for activity in monthly_activities %}
+        <tr class="dashboard-data-row">
+            <td>{{ activity.activityType }}</td>
+            <td>{{ activity.activity_date }}</td>
+            <td>
+                {% if activity.activityType == 'Workout' %}
+                    Exercise: {{ activity.workout_activity.exerciseType|default:"-" }}
+                {% elif activity.activityType == 'Meal' %}
+                    Meal: {{ activity.meal_activity.mealType|default:"-" }}
+                {% elif activity.activityType == 'Water' %}
+                    Amount: {{ activity.water_activity.amount|default:"-" }} ml
+                {% elif activity.activityType == 'Sleep' %}
+                    Duration: {{ activity.sleep_activity.duration|default:"-" }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+        </tr>
+        <tr class="dashboard-expand-row" style="display: none;">
+            <td colspan="2">
+                <a href="{% url 'edit_activity' activity.activityID %}"><button  id="edit_button">Edit ✏️</button></a>
+             <button id='delete_button' onclick="if(confirm('Are you sure you want to delete this activity?')) window.location.href='{% url 'delete_activity' activity.activityID %}'">Delete</button>
+             </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="3">No activities logged yet.</td>
+        </tr>
+    {% endfor %}
+</table>
     </div>
 
-    <div id="dashboard-goal-container">
-    <h3>Create New Goal</h3>
-        <div    id="dashboard-goal-buttons">
-        <button onclick="toggleDisplay('fitness-goal-form')">New Fitness Goal</button>
-        <button onclick="toggleDisplay('nutrition-goal-form')">New Nutrition Goal</button>
-        <button onclick="toggleDisplay('water-goal-form')">New Water Goal</button>
-        <button onclick="toggleDisplay('sleep-goal-form')">New Sleep Goal</button>
-        </div>
 
-        <div id="fitness-goal-form" style="display: none;">
-        <form method="POST" action="{% url 'dashboard' %}">
-            {% csrf_token %}
-            {{ fitness_goal_form.as_p }}
-            <input type="hidden" name="form_type" value="goal">
-            <input type="hidden" name="goal_type" value="Fitness">
-            <button type="submit">Set Fitness Goal</button>
-        </form>
-        </div>
-        <div id="nutrition-goal-form" style="display: none;">
-        <form method="POST" action="{% url 'dashboard' %}">
-             {% csrf_token %}
-             {{ nutrition_goal_form.as_p }}
-             <input type="hidden" name="form_type" value="goal">
-             <input type="hidden" name="goal_type" value="Nutrition">
-             <button type="submit">Set Nutrition Goal</button>
-         </form>
-        </div>
-        <div id="water-goal-form" style="display: none;">
-        <form method="POST" action="{% url 'dashboard' %}">
-            {% csrf_token %}
-            {{ water_goal_form.as_p }}
-            <input type="hidden" name="form_type" value="goal">
-            <input type="hidden" name="goal_type" value="Water">
-            <button type="submit">Set Water Goal</button>
-         </form>
-        </div>
-        <div id="sleep-goal-form" style="display: none;">
-        <form method="POST" action="{% url 'dashboard' %}">
-            {% csrf_token %}
-            {{ sleep_goal_form.as_p }}
-            <input type="hidden" name="form_type" value="goal">
-            <input type="hidden" name="goal_type" value="Sleep">
-            <button type="submit">Set Sleep Goal</button>
-        </form>
-        </div>
-    </div>
-
-    <div id="js-variables"
+<div id="js-variables"
              data-get-chats-url="{% url 'get_chats' %}"
              data-post-chat-url="{% url 'post_chat' %}"
              data-recipient="{{ user.id }}">
         </div>
-    <div id="chatbox">
-        <h3>Messages for {{ user.username }}</h3>
-        <div id="chat-messages"></div>
-        <form id="chat-form">
-        {% csrf_token %}
-        <input type="text" id="chat-input" placeholder="Enter your message...">
-        <button type="submit">Send</button>
-        </form>
-    </div>
-
-    <form action="{% url 'logout' %}" method="POST">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
 
 <script src="{% static 'js/chatbox.js' %}"></script>
 <script src="{% static 'js/dashboard.js' %}"></script>
+
 
 {% endblock %}

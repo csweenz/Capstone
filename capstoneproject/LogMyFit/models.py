@@ -2,6 +2,21 @@ from datetime import date, timedelta, datetime
 from django.contrib.auth.models import User
 from django.db import models
 
+class UserProfile(models.Model):
+    THEME_CHOICES = [
+        ('minimal', 'Modern'),
+        ('maximal', 'Postmod'),
+    ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    preferred_theme = models.CharField(
+        max_length=7,
+        choices=THEME_CHOICES,
+        default='minimal'  # set a default theme
+    )
+
+    def __str__(self):
+        return f"{self.user.username}'s profile"
+
 
 # Activity Model
 class Activity(models.Model):

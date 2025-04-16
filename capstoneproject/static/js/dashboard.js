@@ -4,6 +4,16 @@
     element.style.display = (element.style.display === 'block') ? 'none' : 'block';
   }
 
+  function toggleMenu() {
+    const menu = document.getElementById('header-menu');
+    menu.classList.toggle('show');
+}
+
+function toggleChat() {
+    const chat = document.getElementById('chat-box');
+    chat.classList.toggle('show');
+}
+
 // click listeners for update/delete functions
   document.querySelectorAll('.dashboard-data-row').forEach(row => {
     row.addEventListener('click', function() {
@@ -13,4 +23,5 @@
         nextRow.style.display = (nextRow.style.display === 'table-row') ? 'none' : 'table-row';
       }
     });
-  });
+  })
+

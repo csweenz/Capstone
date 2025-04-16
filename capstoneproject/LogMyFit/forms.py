@@ -4,7 +4,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from LogMyFit.models import Activity, WorkoutActivity, MealActivity, WaterActivity, SleepActivity
-from LogMyFit.models import Goal, FitnessGoal, NutritionGoal, WaterGoal, SleepGoal
+from LogMyFit.models import Goal, FitnessGoal, NutritionGoal, WaterGoal, SleepGoal, UserProfile
 from django import forms
 from .models import Activity
 
@@ -14,6 +14,10 @@ class RegistrationForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
+class ThemeForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['preferred_theme']
 
 class ActivityForm(forms.ModelForm):
     activity_date = forms.DateField(

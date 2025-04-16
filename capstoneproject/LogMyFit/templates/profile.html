@@ -9,7 +9,12 @@
     <!-- Full profile view for the owner -->
     <p><strong>Email:</strong> {{ profile_user.email }}</p>
     <p><strong>Date joined:</strong> {{ profile_user.date_joined }}</p>
-    <!-- Include additional sensitive information here-->
+    <h4>Change Your Theme</h4>
+    <form method="post" action="{% url 'update_theme' %}">
+      {% csrf_token %}
+      {{ form.preferred_theme }}
+      <button type="submit">Update Theme</button>
+    </form>
 
   {% else %}
     <!-- Public profile view for other users-->

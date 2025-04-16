@@ -21,7 +21,7 @@ from django.urls import path
 from django.views.generic import RedirectView
 
 from LogMyFit import views
-from LogMyFit.views import home, success, add_user, user_list, dashboard, leaderboards
+from LogMyFit.views import home, success, add_user, user_list, dashboard
 from LogMyFit.views import edit_activity
 
 urlpatterns = [
@@ -42,6 +42,7 @@ urlpatterns = [
     path('delete_goal/<int:goal_id>/', views.delete_goal, name='delete_goal'),
     path('goal/toggle/<int:goal_id>/', views.toggle_goal_status, name='toggle_goal_status'),
     path('profile/<str:username>/', views.profile_view, name='profile'),
+    path('update-theme/', views.update_theme, name='update_theme'),
     path('chatbox/post/', views.post_chat, name='post_chat'),
     path('chatbox/messages', views.get_chats, name='get_chats'),
 
