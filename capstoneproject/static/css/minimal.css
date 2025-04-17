@@ -9,7 +9,7 @@
 
   /* Spacing */
   --margin: 1rem;
-  --padding: 1rem;
+  --padding: 1.1rem;
   --base-font-size: 16px;
   --typescale: 1.2;             /* Multiply base size by 1.2 to scale up headings */
 
@@ -97,6 +97,7 @@ footer p {
 /* Headings use the heading font and typescale */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
+  margin-top: calc(var(--margin) * 2);
   margin-bottom: calc(var(--margin) / 2);
   line-height: 1.2;
   text-align: center;
@@ -172,7 +173,7 @@ button:hover {
     max-width: 100%;
     margin-left: auto;
     margin-right: auto;
-    top: 0;
+    top: 15px;
     align-items: baseline;
 
 }
@@ -231,10 +232,10 @@ main {
 
 /* Dashboard Heading */
 h2 {
-    margin-bottom: 1px;
+    margin-bottom: var(--margin);
 }
 h3 {
-    margin-top: 2px;
+    margin-top: var(--margin);
 }
 .header-container {
     background-color: #f0f0f0; /* A light gray background */

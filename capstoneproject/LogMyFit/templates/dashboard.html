@@ -137,16 +137,16 @@
     <div id="activities-chart-container">
         <div class="header-container"><h3>Calories Over Time</h3></div>
         <canvas id="caloriesChart"></canvas>
-
+        <p></p>
         <div class="header-container"><h3>Sleep Duration</h3></div>
         <canvas id="sleepChart"></canvas>
-
+        <p></p>
         <div class="header-container"><h3>Water Consumption</h3></div>
         <canvas id="waterChart"></canvas>
-
+        <p></p>
         <div class="header-container"><h3>Workout Duration</h3></div>
         <canvas id="workoutChart"></canvas>
-
+        <p></p>
         <script>
             const chartData = JSON.parse('{{ chart_data_json|escapejs }}');
             //Calories Chart
@@ -236,7 +236,7 @@
     {% endfor %}
 </table>
     </div>
-
+    <p></p>
     <div id="dashboard-activity-table-container">
         <div class="header-container"><h3>Your Recent Activities</h3></div>
     <table id="dashboard-table">
