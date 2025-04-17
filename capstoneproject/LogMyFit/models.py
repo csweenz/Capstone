@@ -4,8 +4,8 @@ from django.db import models
 
 class UserProfile(models.Model):
     THEME_CHOICES = [
-        ('minimal', 'Modern'),
-        ('maximal', 'Postmod'),
+        ('minimal', 'Modern1'),
+        ('maximal', 'Modern2'),
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     preferred_theme = models.CharField(
