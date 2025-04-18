@@ -134,7 +134,7 @@ a:hover {
 
 /* Container class */
 .container {
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: var(--padding);
 }
@@ -223,7 +223,7 @@ button:hover {
 
 /* Dashboard Container */
 main {
-    max-width: 900px;
+    max-width: 1900px;
     margin: 0 auto;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -285,7 +285,7 @@ form {
     border-radius: 5px;
     display: inline-block;
     width: 100%;
-    max-width: 400px;
+    max-width: 1400px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 form input, form select, form button {
