@@ -4,8 +4,43 @@
 {% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/leaderboard.css' %}">
-
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <style>
+        .leaderboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .leaderboard {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            min-width: 300px;
+        }
+        .leaderboard h2 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        .gold { color: gold; font-weight: bold; }
+        .silver { color: silver; font-weight: bold; }
+        .bronze { color: #cd7f32; font-weight: bold; }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -14,8 +49,6 @@
       Clear Leaderboard Cache Manually
   </a>
     <p></p>
-    <div class="leaderboard-container::before">
-    <div class="leaderboard-container::after">
 <div class="leaderboard-container">
     {% for metric, ranking_list in leaderboards.items %}
     <div class="leaderboard">
@@ -39,8 +72,4 @@
     </div>
     {% endfor %}
 </div>
-    </div>
-    </div>
-
-    <script src="{% static 'js/leaderboard.js' %}"></script>
 {% endblock %}

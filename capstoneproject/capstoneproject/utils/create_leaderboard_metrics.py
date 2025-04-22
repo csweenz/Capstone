@@ -97,7 +97,7 @@ def create_leaderboard_metrics():
         for rank, u in enumerate(sorted_users, start=1):
             ranking_list.append({
                 'username': u['username'],
-                'value': u[metric],
+                'value': round(u[metric],2),
                 'rank': rank
             }) # a dictionary entry in the ranked list
         leaderboard[metric] = ranking_list
