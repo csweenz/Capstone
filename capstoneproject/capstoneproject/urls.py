@@ -14,15 +14,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.urls import path
-from django.views.generic import RedirectView
+from django.urls import path, include
 
 from LogMyFit import views
 from LogMyFit.views import home, success, add_user, user_list, dashboard
-from LogMyFit.views import edit_activity
 
 urlpatterns = [
     path('', home, name='home'),
@@ -47,3 +45,9 @@ urlpatterns = [
     path('chatbox/messages', views.get_chats, name='get_chats'),
 
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]
