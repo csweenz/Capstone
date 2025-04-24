@@ -1,24 +1,39 @@
-- name: Set up Python environment
-  uses: actions/setup-python@v4
-  with:
-    python-version: 3.11
+name: CI
 
-- name: Install dependencies
-  run: |
-    cd capstone/capstoneproject
-    pip install -r requirements.txt
+on: [push]
 
-- name: Run migrations
-  run: |
-    cd capstone/capstoneproject
-    python manage.py migrate --settings=capstoneproject.test_settings
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
 
-- name: Run tests with pytest
-  run: |
-    cd capstone/capstoneproject
-    pytest --settings=capstoneproject.test_settings
+    env:
+      DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+      DJANGO_DEBUG: true
+      DJANGO_SETTINGS_MODULE: capstoneproject.test_settings
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1"
 
-- name: Run flake8
-  run: |
-    cd capstone/capstoneproject
-    flake8 .
+    steps:
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          cd capstone/capstoneproject
+          pip install -r requirements.txt
+
+      - name: Run migrations
+        run: |
+          cd capstone/capstoneproject
+          python manage.py migrate --settings=capstoneproject.test_settings
+
+      - name: Run tests with pytest
+        run: |
+          cd capstone/capstoneproject
+          pytest --settings=capstoneproject.test_settings
+
+      - name: Run flake8
+        run: |
+          cd capstone/capstoneproject
+          flake8 .
