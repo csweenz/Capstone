@@ -29,6 +29,9 @@ jobs:
     - name: Set PYTHONPATH
       run: echo "PYTHONPATH=$(pwd)/capstoneproject" >> $GITHUB_ENV
 
+    - name: Migrate DB
+      run: python manage.py migrate --settings=capstoneproject.test_settings
+
     - name: Run tests with pytest
       run: pytest
 
