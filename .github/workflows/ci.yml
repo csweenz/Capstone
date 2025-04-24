@@ -33,7 +33,7 @@ jobs:
       run: |
         cd ..
         cd capstoneproject
-      run: python manage.py migrate --settings=capstoneproject.test_settings
+        python manage.py migrate --settings=capstoneproject.test_settings
 
     - name: Run tests with pytest
       run: pytest
