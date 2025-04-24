@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import environ
 from pathlib import Path
-import os, sys
+import os
+import sys
 
 
 # Initialize environment variables
@@ -39,8 +40,7 @@ else:
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': ':memory:',
         }
-}
-
+    }
 
 # Application definition
 INSTALLED_APPS = [
@@ -52,8 +52,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'LogMyFit',
 ]
-
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

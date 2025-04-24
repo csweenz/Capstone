@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import environ
 from pathlib import Path
-import os, sys
+import os
+import sys
 import mimetypes
 
 
@@ -43,8 +44,8 @@ else:
             'PASSWORD': env.str('DB_PASSWORD', default='view_password'),
             'HOST': 'logmyfit-db.c72gi604mwlb.us-east-2.rds.amazonaws.com',
             'PORT': '3306',
+        }
     }
-}
 
 INTERNAL_IPS = [
     # ...
@@ -63,8 +64,6 @@ INSTALLED_APPS = [
     'LogMyFit',
     'debug_toolbar',
 ]
-
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

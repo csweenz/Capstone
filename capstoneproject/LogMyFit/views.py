@@ -46,8 +46,9 @@ def add_user(request):
 def user_list(request):
     users = cache.get('all_users')
     if users is None:
-        users = list(User.objects.all().values('username', 'email')) # list instead of queryset to prevent iterating over queryset
-        cache.set('all_users', users, 900) # 15 minutes (900 seconds)
+        # list instead of queryset to prevent iterating over queryset
+        users = list(User.objects.all().values('username', 'email'))
+        cache.set('all_users', users, 900)  # 15 minutes (900 seconds)
     return render(request, 'user_list.html', {'users': users})
 
 
@@ -64,10 +65,12 @@ def leaderboards(request):
 
     return render(request, 'leaderboards.html', {'leaderboards': formatted_leaderboards})
 
+
 @login_required
 def clear_leaderboard_cache(request):
     cache.delete('leaderboard_metrics')
     return redirect('leaderboards')
+
 
 def login(request):
     return render(request, 'login.html')
@@ -83,14 +86,14 @@ def profile_view(request, username):
         is_owner = (profile_user == request.user)
 
         context = {'profile_user': profile_user,
-               'is_owner': is_owner,
-               'js_get_chats_url': request.build_absolute_uri(reverse('get_chats')),
-                'js_post_chat_url': request.build_absolute_uri(reverse('post_chat')),
-                'recipient_id': profile_user.id,
-                'profile': profile,
-        }
-        cache.set(cache_key, context, 300) #300 seconds
-        #Updating the profile requires invalidating this cached object
+                   'is_owner': is_owner,
+                   'js_get_chats_url': request.build_absolute_uri(reverse('get_chats')),
+                   'js_post_chat_url': request.build_absolute_uri(reverse('post_chat')),
+                   'recipient_id': profile_user.id,
+                   'profile': profile,
+                   }
+        cache.set(cache_key, context, 300)  # 300 seconds
+        # Updating the profile requires invalidating this cached object
     return render(request, 'profile.html', context)
 
 
@@ -110,6 +113,8 @@ def update_theme(request):
         'is_owner': True,
         'form': form
     })
+
+
 @login_required
 def dashboard(request):
     if request.method == 'POST':
@@ -179,12 +184,11 @@ def dashboard(request):
         water_goal_form = forms.WaterGoalForm()
         sleep_goal_form = forms.SleepGoalForm()
 
-
     activities = get_activities_for_user.get_all(request)
     monthly_activities = get_activities_for_user.get_monthly(request)
     goals = get_goals_for_user.get_goals(request)
 
-    # This is just an example, expand relevant data structures and visualization_data for send to dashboard.html
+    # Expand data structures and visualization_data for dashboard.html
     # intermediate data structures are not sent
     workout_activities = [activity for activity in monthly_activities if activity.activityType == 'Workout']
     # a more complicated example
@@ -200,7 +204,7 @@ def dashboard(request):
     visualization_data = {
         'total_activities': len(monthly_activities),
         'total_workout_activities': len(workout_activities),
-        #total_miles_cycled: total_miles_cycled
+        # total_miles_cycled: total_miles_cycled
     }
 
     # For Visualization
@@ -249,10 +253,11 @@ def dashboard(request):
         'sleep_goal_form': sleep_goal_form,
         'activities': activities,
         'monthly_activities': monthly_activities,
-        'goals' : goals,
+        'goals': goals,
         'visualization_data': visualization_data,
         'chart_data_json': json.dumps(chart_data, cls=DjangoJSONEncoder)
     })
+
 
 @login_required
 def delete_activity(request, activity_id):
@@ -303,9 +308,11 @@ def edit_activity(request, activity_id):
             form.save()
             cache.delete(f'activities_{request.user}')
             cache.delete(f'activities_{request.user}_30_days')
-            return redirect('dashboard')  # after saving it will redirect the user back to the dashboard
+            return redirect('dashboard')
+            # after saving it will redirect the user back to the dashboard
 
     return render(request, 'edit_activity.html', {'form': form, 'activity': activity})
+
 
 @login_required
 def delete_goal(request, goal_id):
@@ -324,6 +331,7 @@ def delete_goal(request, goal_id):
     goal.delete()
     cache.delete(f'goals_{request.user}')
     return redirect('dashboard')
+
 
 @login_required
 def edit_goal(request, goal_id):
@@ -364,6 +372,7 @@ def edit_goal(request, goal_id):
 
     return render(request, 'edit_goal.html', {'form': form, 'goal': goal})
 
+
 @login_required
 def toggle_goal_status(request, goal_id):
     goal = get_object_or_404(Goal, goalID=goal_id, user=request.user)
@@ -375,8 +384,9 @@ def toggle_goal_status(request, goal_id):
     cache.delete(f'goals_{request.user}')
     return redirect('dashboard')
 
+
 @login_required
-def post_chat(request):  #Receives POST via AJAX with a new message.
+def post_chat(request):  # Receives POST via AJAX with a new message.
     if request.method == 'POST':
         message_text = request.POST.get('message', '').strip()
         recipient_id = request.POST.get('recipient')
@@ -390,10 +400,12 @@ def post_chat(request):  #Receives POST via AJAX with a new message.
             cache_key = f"chat_messages_{recipient_id}"
             cache.delete(cache_key)
             return JsonResponse({'status': 'ok'})
-        return JsonResponse({'status': 'error', 'message': 'Missing message or recipient'}, status=400)
+        return JsonResponse(
+            {'status': 'error', 'message': 'Missing message or recipient'}, status=400)
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=405)
 
-def get_chats(request): #Returns the latest chatbox messages as JSON.
+
+def get_chats(request):  # Returns the latest chatbox messages as JSON.
     recipient_id = request.GET.get("recipient")
     if recipient_id:
         try:
@@ -406,7 +418,8 @@ def get_chats(request): #Returns the latest chatbox messages as JSON.
     messages = cache.get(cache_key)
 
     if messages is None:
-        messages_query = ChatboxMessage.objects.filter(recipient_id=recipient_id).order_by('-timestamp')[:20]
+        messages_query = ChatboxMessage.objects.filter(
+            recipient_id=recipient_id).order_by('-timestamp')[:20]
         messages = []
         for m in messages_query:
             messages.append({

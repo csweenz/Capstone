@@ -2,6 +2,7 @@ from datetime import date, timedelta, datetime
 from django.contrib.auth.models import User
 from django.db import models
 
+
 class UserProfile(models.Model):
     THEME_CHOICES = [
         ('minimal', 'Modern1'),
@@ -113,12 +114,13 @@ class Goal(models.Model):
     goalID = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="goals")
     goalType = models.CharField(max_length=10, choices=GOAL_TYPES)
-    targetValue = models.FloatField(default = 0)
+    targetValue = models.FloatField(default=0)
     targetDate = models.DateField(default=date.today)
     status = models.CharField(max_length=10, choices=STATUS_TYPES, default="Active")
 
     def __str__(self):
         return f"{self.user.username} - {self.goalType} Goal"
+
 
 # Fitness Goal Model
 class FitnessGoal(models.Model):
@@ -126,7 +128,6 @@ class FitnessGoal(models.Model):
     targetWeightLifted = models.FloatField(null=True, blank=True)
     targetDistance = models.FloatField(null=True, blank=True)
     targetDuration = models.FloatField(null=True, blank=True)
-
 
     def __str__(self):
         return f"Fitness Goal - {self.goal.goalType} ({self.goal.user.username})"
@@ -138,6 +139,7 @@ class NutritionGoal(models.Model):
     dailyCalorieIntake = models.FloatField(null=True, blank=True)
     proteinGoal = models.FloatField(null=True, blank=True)
     sugarLimit = models.FloatField(null=True, blank=True)
+
 
 # Water Goal Model
 class WaterGoal(models.Model):
@@ -163,6 +165,7 @@ class Leaderboard(models.Model):
 
     def __str__(self):
         return f"{self.challengeName} - {self.user.username} (Rank: {self.rank})"
+
 
 # Chat Model
 class ChatboxMessage(models.Model):

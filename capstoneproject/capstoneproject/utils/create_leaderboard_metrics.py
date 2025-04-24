@@ -2,7 +2,9 @@ from datetime import date, timedelta
 from django.core.cache import cache
 from django.db.models import Sum, Min, F, ExpressionWrapper, FloatField
 from django.contrib.auth.models import User
-from LogMyFit.models import Activity, WorkoutActivity, MealActivity, WaterActivity, SleepActivity, Goal
+from LogMyFit.models import (Activity, WorkoutActivity,
+                             MealActivity, WaterActivity, SleepActivity, Goal)
+
 
 def create_leaderboard_metrics():
     user_metrics = []
@@ -43,7 +45,8 @@ def create_leaderboard_metrics():
         )
 
         # Sleep
-        sleep_activities = list(SleepActivity.objects.filter(activity__user=user).select_related('activity'))
+        sleep_activities = list(
+            SleepActivity.objects.filter(activity__user=user).select_related('activity'))
         total_sleep_seconds = sum(s.duration.total_seconds() for s in sleep_activities)
         hours_slept = total_sleep_seconds / 3600
         sleep_dates = sorted({s.activity.activity_date for s in sleep_activities}, reverse=True)
@@ -59,7 +62,6 @@ def create_leaderboard_metrics():
         # Goals
         goals_set = Goal.objects.filter(user=user).count()
         goals_completed = Goal.objects.filter(user=user, status='Completed').count()
-
 
     # dictionary for each user
         user_metrics.append({
@@ -78,14 +80,15 @@ def create_leaderboard_metrics():
             'goals_completed': goals_completed,
         })
 
-    # building data structure for holding sorted lists for each metric ## dictionary->list->dictionary
+    # building data structure for holding sorted lists for each metric
+    # dictionary->list->dictionary
     metric_names = [
         'total_workouts', 'distance_ran', 'distance_swam', 'distance_cycled',
         'meals_tracked', 'lowest_carb_percentage', 'water_logs', 'amount_drank',
         'hours_slept', 'daily_sleep_streak', 'goals_set', 'goals_completed'
     ]
 
-    leaderboard = {} # master dictionary
+    leaderboard = {}  # master dictionary
     for metric in metric_names:
         # lower values are better for some metrics
         if metric == 'lowest_carb_percentage':
@@ -93,13 +96,13 @@ def create_leaderboard_metrics():
         else:
             sorted_users = sorted(user_metrics, key=lambda u: u[metric], reverse=True)
 
-        ranking_list = [] # entries in master dictionary
+        ranking_list = []  # entries in master dictionary
         for rank, u in enumerate(sorted_users, start=1):
             ranking_list.append({
                 'username': u['username'],
-                'value': round(u[metric],2),
+                'value': round(u[metric], 2),
                 'rank': rank
-            }) # a dictionary entry in the ranked list
+            })  # a dictionary entry in the ranked list
         leaderboard[metric] = ranking_list
 
     # cache for one day (86400 seconds).

@@ -14,12 +14,14 @@ def test_create_activity():
     assert activity.user.username == "testuser"
     assert activity.activityType == "Workout"
 
+
 @pytest.mark.django_db
 def test_create_goal():
     user = User.objects.create_user(username="testuser", password="password123")
     goal = Goal.objects.create(user=user, goalType="Nutrition", targetDate=date.today())
     assert goal.user.username == "testuser"
     assert goal.goalType == "Nutrition"
+
 
 @pytest.mark.django_db
 def test_create_leaderboard_entry():
@@ -28,11 +30,13 @@ def test_create_leaderboard_entry():
 
     assert leaderboard.user.username == "testuser"
 
+
 @pytest.mark.django_db
 def test_get_user_profile(client):
     user = User.objects.create_user(username="testuser", password="password123")
     UserProfile.objects.get_or_create(user=user)
     assert user.profile.preferred_theme == 'minimal'
+
 
 @pytest.mark.django_db
 def test_chatbox_message():
@@ -40,6 +44,3 @@ def test_chatbox_message():
     recipient = User.objects.create_user(username="testuser2", password="password123")
     message = ChatboxMessage.objects.create(sender=sender, recipient=recipient)
     assert message.recipient.username == "testuser2"
-
-
-

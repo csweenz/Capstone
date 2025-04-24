@@ -15,6 +15,7 @@ def test_dashboard_view(client):
     response = client.get(reverse('dashboard'))
     assert response.status_code == 200
 
+
 @pytest.mark.django_db
 def test_dashboard_logged_out_view(client):
     User.objects.create_user(username="testuser", password="password123")
@@ -24,9 +25,11 @@ def test_dashboard_logged_out_view(client):
     response = client.get(reverse('dashboard'))
     assert not response.status_code == 200
 
+
 def test_dashboard_default_view(client):
     response = client.get(reverse('dashboard'))
     assert not response.status_code == 200
+
 
 @pytest.mark.django_db
 def test_dashboard_full_view(client):
@@ -34,7 +37,7 @@ def test_dashboard_full_view(client):
     client.login(username="testuser", password="password123")
     activity = Activity.objects.create(activityID=1, user=user, activityType='Workout')
     WorkoutActivity.objects.create(activity=activity)
-    cache.delete(f'activities_testuser_30_days')
+    cache.delete('activities_testuser_30_days')
     response = client.get(reverse('dashboard'))
     visualization_data = response.context.get('visualization_data')
     chart_data_json = response.context.get('chart_data_json')
@@ -42,18 +45,22 @@ def test_dashboard_full_view(client):
     assert visualization_data['total_workout_activities'] == 1
     assert chart_data_json is not None
 
+
 def test_home_view(client):
 
     response = client.get(reverse('home'))
     assert response.status_code == 200
 
+
 def test_success_view(client):
     response = client.get(reverse('success'))
     assert response.status_code == 200
 
+
 def test_add_user_view(client):
     response = client.get(reverse('add_user'))
     assert response.status_code == 200
+
 
 def test_login_view(client):
     response = client.get(reverse('login'))
@@ -69,9 +76,11 @@ def test_edit_activity_view(client):
     response = client.get(reverse('edit_activity', kwargs={'activity_id': activity.activityID}))
     assert response.status_code == 200
 
+
 def delete_activity_view(client):
     response = client.get(reverse('delete_activity'))
     assert response.status_code == 404
+
 
 @pytest.mark.django_db
 def test_edit_goal_view(client):
@@ -82,10 +91,12 @@ def test_edit_goal_view(client):
     response = client.get(reverse('edit_goal', kwargs={'goal_id': goal.goalID}))
     assert response.status_code == 200
 
+
 @pytest.mark.django_db
 def test_user_list_view(client):
     response = client.get(reverse('user_list'))
     assert response.status_code == 200
+
 
 @pytest.mark.django_db
 def test_leaderboards_view():
@@ -101,9 +112,10 @@ def test_leaderboards_view():
     assert leaderboards_metrics is not None
     assert leaderboards_metrics['total_workouts'][0]['username'] == 'testuser'
 
+
 @pytest.mark.django_db
 def test_clear_leaderboard_cache_view(client):
-    user = User.objects.create_user(username="testuser", password="password123")
+    User.objects.create_user(username="testuser", password="password123")
     client.login(username="testuser", password="password123")
     cache.set('leaderboard_metrics', {'test': 'data'}, 86400)
     url = reverse('clear_leaderboard_cache')
@@ -112,10 +124,11 @@ def test_clear_leaderboard_cache_view(client):
     assert response.status_code == 302
     assert 'leaderboards' in response.url
 
+
 @pytest.mark.django_db
 def test_profile_view_public(client):
     owner = User.objects.create_user(username="owner", password="password123", email="owner@example.com")
-    viewer = User.objects.create_user(username="viewer", password="password123", email="viewer@example.com")
+    User.objects.create_user(username="viewer", password="password123", email="viewer@example.com")
     client.login(username="viewer", password="password123")
     # viewer requests owner's profile.
     url = reverse('profile', kwargs={'username': owner.username})
@@ -124,6 +137,7 @@ def test_profile_view_public(client):
     assert response.status_code == 200
     assert context.get('is_owner') is False
     assert context.get('profile_user').username == owner.username
+
 
 @pytest.mark.django_db
 def test_profile_view_private(client):
@@ -136,6 +150,7 @@ def test_profile_view_private(client):
     assert context.get('is_owner') is True
     assert context.get('profile_user').username == user.username
 
+
 @pytest.mark.django_db
 def test_update_theme_view(client):
     user = User.objects.create_user(username="testuser", password="password123", email="test@example.com")
@@ -147,6 +162,7 @@ def test_update_theme_view(client):
     profile = UserProfile.objects.get(user=user)
     assert response.status_code == 302
     assert profile.preferred_theme == 'maximal'
+
 
 @pytest.mark.django_db
 def test_post_chat_view(client):
@@ -164,6 +180,7 @@ def test_post_chat_view(client):
     assert json_data.get('status') == 'ok'
     messages = ChatboxMessage.objects.filter(recipient=recipient, sender=sender, message='Test to recipient')
     assert messages.count() == 1
+
 
 @pytest.mark.django_db
 def test_get_chats_view(client):
