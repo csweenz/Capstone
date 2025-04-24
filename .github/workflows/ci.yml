@@ -33,7 +33,7 @@ jobs:
       - name: Run tests with pytest
         run: |
           cd capstoneproject
-          pytest --settings=capstoneproject.test_settings
+          pytest
 
       - name: Run flake8
         run: |
