@@ -27,6 +27,7 @@ jobs:
 
     - name: Run pytest
       run: |
+        export PYTHONPATH=$PWD
         pytest
 
     - name: Lint with flake8
