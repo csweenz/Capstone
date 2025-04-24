@@ -13,6 +13,11 @@ jobs:
       DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1"
 
     steps:
+      steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+
       - name: Set up Python environment
         uses: actions/setup-python@v4
         with:
