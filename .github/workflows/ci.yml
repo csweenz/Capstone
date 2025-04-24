@@ -10,6 +10,7 @@ jobs:
       DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
       DJANGO_DEBUG: true
       DJANGO_SETTINGS_MODULE: capstoneproject.test_settings
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1"
 
     steps:
     - name: Checkout code
