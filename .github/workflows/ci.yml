@@ -20,20 +20,20 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd capstone/capstoneproject
+          cd capstoneproject
           pip install -r requirements.txt
 
       - name: Run migrations
         run: |
-          cd capstone/capstoneproject
+          cd capstoneproject
           python manage.py migrate --settings=capstoneproject.test_settings
 
       - name: Run tests with pytest
         run: |
-          cd capstone/capstoneproject
+          cd capstoneproject
           pytest --settings=capstoneproject.test_settings
 
       - name: Run flake8
         run: |
-          cd capstone/capstoneproject
+          cd capstoneproject
           flake8 .
