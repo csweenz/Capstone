@@ -72,7 +72,7 @@ nav ul li a:hover {
 
 footer {
     background: var(--color-background);
-    color: #333333;
+    color: var(--color-border);
     margin-left: auto;
     margin-right: auto;
     text-align: center;
@@ -120,6 +120,7 @@ h6 {  font-size: calc(var(--base-font-size) / (var(--typescale) * var(--typescal
 
 /* Paragraphs */
 p {
+  margin-top: var(--margin);
   margin-bottom: var(--margin);
 }
 
@@ -158,13 +159,34 @@ button:hover {
   opacity: 0.8;
 }
 
-/* Navbar styling */
+/* Profile Page */
+#profile{
+    display: flex;
+    justify-content: space-between;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    top: 15px;
+    z-index:1000;
+    align-items: baseline;
+}
+.profile-info{
+  max-height: 375px;
+  overflow-y: scroll;
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  z-index: 1001;
+  background: var(--color-background);
+  margin-bottom: 100px;
+}
+/* Navbar and Chat styling */
 .header-container {
     text-align: center;
-    width: 100%;
+    width: 50%;
     background-color: var(--color-background);
-    margin-top: 0;
-    padding: 0;
+    margin-top: calc(var(--margin) / 2);
+    margin: auto auto;
+    padding: calc(var(--padding) / 2);
 }
 .top-menu{
     display: flex;
@@ -174,25 +196,40 @@ button:hover {
     margin-left: auto;
     margin-right: auto;
     top: 15px;
+    z-index:1000;
     align-items: baseline;
 
 }
 .chat-bubble {
     position: absolute;
     left: 0;
+    z-index: 1000;
 }
 .chat-box {
     position: absolute;
     top: calc(100% + 70px);
     left: 0;
     display: none;
+    max-height: 750px;
+    max-width: 25%;
     list-style: none;
     background: var(--color-background);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     border: 1px dashed var(--color-border);
+    padding: var(--padding);
     z-index: 1000;
+    text-size-adjust: 80%;
 }
 .chat-box.show {
     display: block;
+}
+#chat-messages {
+  max-height: 375px;
+  overflow-y: scroll;
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  z-index: 1001;
+  background: var(--color-background);
 }
 .hamburger {
     position: absolute;
@@ -201,6 +238,27 @@ button:hover {
     border: none;
     font-size: calc(var(--base-font-size) * 0.8);
     cursor: pointer;
+    z-index: 1000;
+}
+.chat-message {
+  padding: 0.5em;
+  margin-bottom: 0.25em;
+  border-radius: 4px;
+}
+.admin-message {
+  background-color: #ffe5e5;
+  border: 1px solid #ffcccc;
+  color: #900;
+}
+.system-message {
+  background-color: #e5cce5;
+  border: 1px solid #ccffcc;
+  color: #0d0;
+}
+.announcement-message {
+  background-color: #e5ffe5;
+  border: 1px solid #ccffcc;
+  color: #090;
 }
 .menu {
     position: absolute;
@@ -238,16 +296,14 @@ h2 {
 h3 {
     margin-top: var(--margin);
 }
-.header-container {
-    background-color: #f0f0f0; /* A light gray background */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
 
-/* Activity Table */
+/* Activity and Goal Tables */
 table {
-    width: 100%;
+    max-width: 90%;
+    min-width: 50%;
     border-collapse: collapse;
     margin-top: var(--margin);
+    margin: auto auto;
 }
 th, td {
     padding: var(--padding);
@@ -263,6 +319,9 @@ tr:hover {
 }
 
 /* Log New Activity Buttons */
+#dashboard-form-container{
+    padding: calc(var(--padding) * 2);
+}
 div > button {
     background: var(--color-secondary);
     color: white;
@@ -279,45 +338,43 @@ div > button:hover {
 }
 .sticky-header {
     position:sticky;
+    margin: auto auto;
     top: 0;
-    z-index: 100;
-    background: white;
-    width: 100%;
+    z-index: 1;
+    background: var(--color-background);
+    max-width: 100%;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+/* Charts */
 .chart-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   gap: var(--margin);
   width: 100%;
-  margin: var(--margin) auto;
+  margin: auto auto;
   overflow-x: auto;
 }
-
 .chart-card {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   max-width: 350px;
-  background: #f9f9f9;
+  background: var(--color-background);
   border: 2px solid #ddd;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: var(--padding);
 }
-
 .chart-header {
   flex: 0 0 auto;
 }
-
 .chart-div {
   flex: 1 1 auto;
   display: flex;
   align-items: flex-end;
   justify-content: center;
 }
-
 .chart-div canvas {
   width: 90% !important;
   height: 90%  !important;
@@ -356,7 +413,9 @@ form button:hover {
 /* Logout Button */
 form[action*="logout"] button {
     background: #e74c3c;
-    font-size: 1rem;
+    font-size: var(--base-font-size);
+    padding: 0;
+    margin: 0;
 }
 form[action*="logout"] button:hover {
     background: #c0392b;

@@ -173,6 +173,9 @@ class ChatboxMessage(models.Model):
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="received_messages")
     message = models.CharField(max_length=256)
     timestamp = models.DateTimeField(auto_now_add=True)
+    is_admin = models.BooleanField(default=False)
+    is_system = models.BooleanField(default=False)
+    is_announcement = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.sender.username if self.user else 'Anonymous'}: {self.message[:20]}"

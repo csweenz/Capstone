@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -390,12 +391,14 @@ def post_chat(request):  # Receives POST via AJAX with a new message.
     if request.method == 'POST':
         message_text = request.POST.get('message', '').strip()
         recipient_id = request.POST.get('recipient')
+        as_staff = request.POST.get('as_staff') == '1' and request.user.is_staff
         if message_text and recipient_id:
             recipient = get_object_or_404(User, pk=recipient_id)
             ChatboxMessage.objects.create(
                 recipient=recipient,
                 sender=request.user,
-                message=message_text
+                message=message_text,
+                is_admin=as_staff,
             )
             cache_key = f"chat_messages_{recipient_id}"
             cache.delete(cache_key)
@@ -407,26 +410,36 @@ def post_chat(request):  # Receives POST via AJAX with a new message.
 
 def get_chats(request):  # Returns the latest chatbox messages as JSON.
     recipient_id = request.GET.get("recipient")
-    if recipient_id:
-        try:
-            recipient = User.objects.get(pk=recipient_id)
-        except User.DoesNotExist:
-            recipient = request.user
-    else:
-        recipient = request.user
-    cache_key = f"chat_messages_{recipient.id}"
+    try:
+        target = User.objects.get(pk=recipient_id)
+    except (TypeError, User.DoesNotExist):
+        target = request.user
+
+    public_system = Q(sender__username="System", recipient__isnull=True)
+    for_me = Q(recipient=target)
+
+    cache_key = f"chat_messages_{target.id}"
     messages = cache.get(cache_key)
+    if messages is not None:
+        return JsonResponse({'messages': messages})
 
-    if messages is None:
-        messages_query = ChatboxMessage.objects.filter(
-            recipient_id=recipient_id).order_by('-timestamp')[:20]
-        messages = []
-        for m in messages_query:
-            messages.append({
-                'sender': m.sender.username if m.sender else 'Anonymous',
-                'message': m.message,
-                'timestamp': m.timestamp.strftime("%Y-%m-%d %H:%M:%S")
-            })
-        cache.set(cache_key, messages, 300)
-
+    qs = (
+        ChatboxMessage.objects
+        .filter(public_system | for_me)
+        .select_related("sender")
+        .order_by("-timestamp")[:20]
+    )
+    messages = []
+    for m in qs:
+        messages.append({
+            'sender': m.sender.username if m.sender else 'System',
+            'sender_id': m.sender.id if m.sender else None,
+            'message': m.message,
+            'timestamp': m.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+            'is_system': m.is_system,
+            'is_admin': m.is_admin,
+            'is_announcement' : m.is_announcement,
+        })
+    # cache for 5 minutes
+    cache.set(cache_key, messages, 300)
     return JsonResponse({'messages': messages})

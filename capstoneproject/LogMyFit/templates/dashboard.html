@@ -17,6 +17,12 @@
                 <form id="chat-form">
                 {% csrf_token %}
                 <input type="text" id="chat-input" placeholder="Enter your message...">
+                {% if request.user.is_staff %}
+                    <label>
+                    <input type="checkbox" name="as_staff" id="as_staff">
+                    Send as staff (private)
+                    </label>
+                {% endif %}
                 <button type="submit">Send</button>
                 </form>
             </div>
@@ -285,7 +291,8 @@
 <div id="js-variables"
              data-get-chats-url="{% url 'get_chats' %}"
              data-post-chat-url="{% url 'post_chat' %}"
-             data-recipient="{{ user.id }}">
+             data-recipient="{{ user.id }}"
+             data-viewer="{{ user.id }}">
         </div>
 <script src="{% static 'js/chatbox.js' %}"></script>
 <script src="{% static 'js/dashboard.js' %}"></script>
