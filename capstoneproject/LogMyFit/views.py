@@ -438,7 +438,7 @@ def get_chats(request):  # Returns the latest chatbox messages as JSON.
             'timestamp': m.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
             'is_system': m.is_system,
             'is_admin': m.is_admin,
-            'is_announcement' : m.is_announcement,
+            'is_announcement': m.is_announcement,
         })
     # cache for 5 minutes
     cache.set(cache_key, messages, 300)
