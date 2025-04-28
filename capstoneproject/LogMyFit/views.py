@@ -18,7 +18,7 @@ from .models import ChatboxMessage
 import LogMyFit.forms as forms
 from capstoneproject.utils.create_leaderboard_metrics import create_leaderboard_metrics
 from .models import Activity, Goal, UserProfile
-from capstoneproject.utils import get_activities_for_user, get_goals_for_user
+from capstoneproject.utils import get_activities_for_user, get_goals_for_user, check_goal_status
 
 
 def home(request):
@@ -70,6 +70,8 @@ def leaderboards(request):
 @login_required
 def clear_leaderboard_cache(request):
     cache.delete('leaderboard_metrics')
+    for user in User.objects.all():
+        check_goal_status.check_all_goals(user)
     return redirect('leaderboards')
 
 
@@ -147,6 +149,7 @@ def dashboard(request):
                 activity_instance.save()
                 cache.delete(f'activities_{request.user}')
                 cache.delete(f'activities_{request.user}_30_days')
+                check_goal_status.check_goals_on_new_activity(activity)
                 return redirect('dashboard')
 
         if form_type == 'goal':
@@ -309,6 +312,7 @@ def edit_activity(request, activity_id):
             form.save()
             cache.delete(f'activities_{request.user}')
             cache.delete(f'activities_{request.user}_30_days')
+            check_goal_status.check_goals_on_new_activity(activity)
             return redirect('dashboard')
             # after saving it will redirect the user back to the dashboard
 

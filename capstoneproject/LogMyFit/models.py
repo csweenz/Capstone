@@ -99,8 +99,8 @@ class SleepActivity(models.Model):
 # Goal Model
 class Goal(models.Model):
     GOAL_TYPES = [
-        ('Fitness', 'Fitness'),
-        ('Nutrition', 'Nutrition'),
+        ('Fitness', 'Workout'),
+        ('Nutrition', 'Meal'),
         ('Sleep', 'Sleep'),
         ('Water', 'Water')
     ]
@@ -111,12 +111,25 @@ class Goal(models.Model):
         ('Failed', 'Failed')
     ]
 
+    TARGET_TYPES = [
+        ("targetWeightLifted", "Weight Lifted"),
+        ("targetDistance", "Distance"),
+        ("targetDuration", "Duration"),
+        ("dailyCalorieIntake", "Calories"),
+        ("proteinGoal", "Protein"),
+        ("sugarLimit", "Sugar"),
+        ("dailyWaterIntakeTarget", "Water Intake (ml)"),
+        ("targetHours", "Hours of Sleep"),
+    ]
+
     goalID = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="goals")
     goalType = models.CharField(max_length=10, choices=GOAL_TYPES)
-    targetValue = models.FloatField(default=0)
+    targetType = models.CharField(max_length=22, null=True, choices=TARGET_TYPES)
     targetDate = models.DateField(default=date.today)
     status = models.CharField(max_length=10, choices=STATUS_TYPES, default="Active")
+    created_at = models.DateTimeField(default=date.today)
+    progress_percentage = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.user.username} - {self.goalType} Goal"

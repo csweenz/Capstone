@@ -218,6 +218,8 @@
         <th>Goal Type</th>
         <th>Deadline</th>
         <th>Status</th>
+        <th>Target</th>
+        <th>Progress</th>
     </tr>
     </thead>
     {% for goal in goals %}
@@ -225,6 +227,14 @@
             <td>{{ goal.goalType }}</td>
             <td>{{ goal.targetDate }}</td>
             <td>{{ goal.status }}</td>
+            <td>
+                {% if goal.targetType %}
+                    {{ goal.get_targetType_display }}
+                {% else %}
+                    <a href="{% url 'edit_goal' goal.goalID %}">Show</a>
+                {% endif %}
+            </td>
+            <td>{{ goal.progress_percentage }}%</td>
         </tr>
         <tr class="dashboard-expand-row" style="display: none;">
             <td colspan="2">
