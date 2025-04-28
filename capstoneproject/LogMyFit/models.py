@@ -128,7 +128,7 @@ class Goal(models.Model):
     targetType = models.CharField(max_length=22, null=True, choices=TARGET_TYPES)
     targetDate = models.DateField(default=date.today)
     status = models.CharField(max_length=10, choices=STATUS_TYPES, default="Active")
-    created_at = models.DateTimeField(default=date.today)
+    created_at = models.DateField(default=date.today)
     progress_percentage = models.IntegerField(default=0)
 
     def __str__(self):
