@@ -8,7 +8,7 @@ from LogMyFit.models import (Activity, WorkoutActivity,
 
 def create_leaderboard_metrics():
     user_metrics = []
-    users = User.objects.all()
+    users = User.objects.exclude(username__in=["System", "Sysadmin"])
 
     for user in users:
         # Fitness metrics
