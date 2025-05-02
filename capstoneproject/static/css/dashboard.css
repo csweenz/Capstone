@@ -127,7 +127,7 @@ form[action*="logout"] button:hover {
 .streak-display {
     position: fixed;
     top: 10px;
-    right: 20px; /* ← this is the key */
+    right: 20px;
     background-color: #fff3cd;
     color: #856404;
     padding: 6px 12px;

@@ -466,7 +466,7 @@ def get_streak(user):
         if Activity.objects.filter(user=user, activity_date=check_day).exists():
             streak += 1
         else:
-            break  # streak ends if a day is missed
+            break
 
     return streak
 
