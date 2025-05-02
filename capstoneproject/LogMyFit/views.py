@@ -15,6 +15,7 @@ from django.urls import reverse
 
 from .models import ChatboxMessage
 
+from datetime import timedelta, date
 import LogMyFit.forms as forms
 from capstoneproject.utils.create_leaderboard_metrics import create_leaderboard_metrics
 from .models import Activity, Goal, UserProfile
@@ -120,6 +121,8 @@ def update_theme(request):
 
 @login_required
 def dashboard(request):
+    user = request.user
+    streak = get_streak(user)
     if request.method == 'POST':
         form_type = request.POST.get('form_type')
 
@@ -246,6 +249,10 @@ def dashboard(request):
         else:
             chart_data['workout_duration'].append(0)
 
+
+    streak = get_streak(request.user)
+
+
     return render(request, 'dashboard.html', {
         'workout_form': workout_form,
         'meal_form': meal_form,
@@ -259,7 +266,9 @@ def dashboard(request):
         'monthly_activities': monthly_activities,
         'goals': goals,
         'visualization_data': visualization_data,
-        'chart_data_json': json.dumps(chart_data, cls=DjangoJSONEncoder)
+        'chart_data_json': json.dumps(chart_data, cls=DjangoJSONEncoder),
+
+        'streak': streak,
     })
 
 
@@ -447,3 +456,18 @@ def get_chats(request):  # Returns the latest chatbox messages as JSON.
     # cache for 5 minutes
     cache.set(cache_key, messages, 300)
     return JsonResponse({'messages': messages})
+
+def get_streak(user):
+    today = date.today()
+    streak = 0
+
+    for i in range(0, 100):  # check up to last 100 days
+        check_day = today - timedelta(days=i)
+        if Activity.objects.filter(user=user, activity_date=check_day).exists():
+            streak += 1
+        else:
+            break  # streak ends if a day is missed
+
+    return streak
+
+

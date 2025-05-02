@@ -123,3 +123,16 @@ form[action*="logout"] button:hover {
         width: 90%;
     }
 }
+
+.streak-display {
+    position: fixed;
+    top: 10px;
+    right: 20px; /* ← this is the key */
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    z-index: 9999;
+}
