@@ -1,5 +1,3 @@
-from datetime import date, timedelta
-
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -249,9 +247,7 @@ def dashboard(request):
         else:
             chart_data['workout_duration'].append(0)
 
-
     streak = get_streak(request.user)
-
 
     return render(request, 'dashboard.html', {
         'workout_form': workout_form,
@@ -457,6 +453,7 @@ def get_chats(request):  # Returns the latest chatbox messages as JSON.
     cache.set(cache_key, messages, 300)
     return JsonResponse({'messages': messages})
 
+
 def get_streak(user):
     today = date.today()
     streak = 0
@@ -469,5 +466,3 @@ def get_streak(user):
             break
 
     return streak
-
-
