@@ -38,8 +38,19 @@ const getChatsUrlWithRecipient = getChatsUrl + '?recipient=' + encodeURIComponen
                         let displayName = msg.sender;
                         if (msg.is_admin)  displayName += " (Staff)";
 
-                    div.innerHTML = "<strong>" + displayName + ":</strong> " + msg.message + " <em>(" + msg.timestamp + ")</em>";
-                    messagesDiv.appendChild(div);
+                        const senderSpan = document.createElement("strong");
+                            senderSpan.textContent = msg.sender + ": ";
+
+                        const messageSpan = document.createElement("span");
+                            messageSpan.textContent = msg.message;
+
+                        const timeEm = document.createElement("em");
+                            timeEm.textContent = ` (${msg.timestamp})`;
+
+                        div.appendChild(senderSpan);
+                        div.appendChild(messageSpan);
+                        div.appendChild(timeEm);
+                        messagesDiv.appendChild(div);
                   });
               });
 
