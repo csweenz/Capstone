@@ -174,6 +174,8 @@ erDiagram
 flowchart TD
     A[Start] -->|New User| B[Sign Up]
     A -->|Existing User| C[Log In]
+	A -->|View Lists| S[User List]
+	A -->|View Lists| T[Leaderboards]
     
     B --> D[Dashboard]
     C --> D
@@ -189,23 +191,27 @@ flowchart TD
     J -->|Nutrition| L[Set Nutrition Goal]
     J -->|Sleep| M[Set Sleep Goal]
 
-    D -->|Join Challenges| N[Choose Challenge Type]
-    N -->|Leaderboard| O[Join Leaderboard]
-    N -->|Community Event| P[Join Event]
+    D -->|Menu| N[Top Menu]
+	N -->|Chat| O[Chatbox]
+    N -->|Leaderboard| T
+    N -->|Check Profile| P[Profile]
+	
+	O -->|Send Message| O
+	P -->|Send Message| O
+	T -->|Click User| P	
 
     D -->|View Progress| Q[Check Stats & Goals]
     
-    Q --> R[End Flow]
-    F --> R
-    G --> R
-    H --> R
-    I --> R
-    K --> R
-    L --> R
-    M --> R
-    O --> R
-    P --> R
-
+    Q --> D
+    F --> D
+    G --> D
+    H --> D
+    I --> D
+    K --> D
+    L --> D
+    M --> D
+    P --> D
+	T --> D
 
 
 ```
