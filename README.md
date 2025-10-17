@@ -24,40 +24,10 @@ pip install -r requirements.txt
 ```
 cd capstoneproject
 ```
-### 5. Fix .env file
-Use the following command in the terminal to copy .env.sample into a .env file.
-```
-cp capstoneproject/.env.sample capstoneproject/.env
-```
-Change the variable DJANGO_SECRET_KEY to a value with 10-15 random characters.
-Save the file.
-
-In the file in 'capstoneproject/capstoneproject/.env' add the following at the bottom:
-```
-DB_USER=collaborator
-DB_PASSWORD=CollabPW321!
-```
-
-### 6. Run Server
+### 5. Run Server
 ```
 python manage.py runserver
 ```
-### 7. Are you on a MAC? Getting a MYSQL Error?
-This error occurs because macOS does not come with MySQL development headers by default, which are required to install mysqlclient (the underlying library that Django’s MySQL backend uses).
-Windows often handles this differently due to bundled MySQL support in some environments.
-
-Use the following commands to fix the error
-```
-brew install pkg-config
-brew install mysql-client
-pip install mysql
-```
-### 8. Access the App
-Once the server is running, see terminal for link to port to enter in your browser.
-
----
-
-
 ## <p align="center">Entity Relationship Diagram </p>
 
 ```mermaid
